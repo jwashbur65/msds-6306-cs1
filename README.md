@@ -2,7 +2,7 @@
 
 MSDS 6306 Case Study 1 
 
-Team Members
+## Team Members
 * Lavonnia Newman
 * Joseph Caguioa
 * Jeff Washburn
