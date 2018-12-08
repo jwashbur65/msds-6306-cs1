@@ -1,0 +1,56 @@
+---
+title: "MainVariableDescriptions"
+author: "Joseph Caguioa"
+date: "12/7/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Beers.csv
+***
+
+Provided by the client, this dataset contains observations on 2410 US craft beers with the following variables:
+
+* Name: Beer name.
+* Beer_ID: A unique numerical identifier for the beer.
+* ABV: Alcohol by volume.
+* IBU: International Bitterness Units.
+* Brewery_ID: ID of brewery associated with the beer.
+* Style: The beer style
+* Ounces:
+
+## Breweries.csv
+***
+
+Provided by the client, this dataset contains observations on 558 US breweries with the following variables:
+
+* Brew_ID: A unique numerical identifier for the brewery.
+* Name:
+* City:
+* State:
+
+## Merged.csv
+***
+
+The merged version of the Beers.csv and Breweries.csv files, created by [the MergeData.R] file. The [Brewery_ID/Brew_ID] variable was used to merge them.
+
+
+## Variable Summary
+***
+
+Original Name   | File      | Original Class   | Merged Name   | Merged Class
+:-------------- | --------- | ---------------- | ------------- | --------------
+Name            | Beer      |
+Beer_ID         | Beer      |
+ABV             | Beer      |
+IBU             | Beer      |
+Brewery_ID      | Beer      |
+Style           | Beer      |
+Ounces          | Beer      |
+Brew_ID         | Breweries |
+Name            | Breweries |
+City            | Breweries |
+State           | Breweries |

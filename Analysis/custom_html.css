@@ -1,0 +1,13 @@
+/* CSS file to edit HTML output for Rmd file. */
+
+h1 {
+	font-family: "Helvetica", sans-serif;
+	font-weight: bold;
+	color: #f28e1c;
+}
+
+h2 {
+	font-family: "Helvetica", sans-serif;
+	font-weight: bold;
+	color: #f28e1c;
+}
