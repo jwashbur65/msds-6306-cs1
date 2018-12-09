@@ -1,0 +1,19 @@
+---
+title: "6306-cs-1"
+author: "Lavonnia, Joseph, Jeff"
+date: "12/9/2018"
+output: 
+  html_document:
+    theme: simplex
+    highlight: zenburn
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
