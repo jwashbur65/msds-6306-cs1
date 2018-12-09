@@ -2,7 +2,15 @@
 title: "Analysis"
 author: "Joseph Caguioa"
 date: "12/7/2018"
-output: html_document
+output: 
+  html_document:
+    theme: simplex
+    highlight: zenburn
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+
 ---
 
 ```{r setup, include=FALSE}
