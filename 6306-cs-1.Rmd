@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Subheading 1.1
 
 # Heading 2
+## Subheading 2.1
 
 # Heading 3
 
