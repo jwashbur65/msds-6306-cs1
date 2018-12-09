@@ -125,7 +125,6 @@ kable(abv_state_median, format="markdown")
 kable(ibu_state_median, format="markdown")
 ```
 
-#This is a comment to test conflicts
 
 
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
