@@ -16,6 +16,7 @@ output:
 ```{r setup, include=FALSE, message=F}
 knitr::opts_chunk$set(echo = TRUE)
 
+# install.packages("psych")
 library(knitr)
 library(ggplot2)
 library(dplyr)
