@@ -17,17 +17,28 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Placeholder. RMarkdown file should contain:
+# Placeholder. RMarkdown file should contain:
 * Formal introduction to client.
 * Code explanations as sentences before or after chunks.
 * Explicit answers to following 7 questions, given in sentences outside code chunks.
 * Project conclusion summarizing findings.
 
-The questions:
-1. How many breweries are present in each state? (Alongside a nicely formatted table, consider a choropleth map if possible.)
-2. Merge beer data with breweries data. Print first 6 observations and last 6 observations to check merged file.
-3. Report number of NAs in each column.
-4. Compute median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
-5. Which state has maximum ABV beer? Most bitter beer in IBU? (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
-6. Summary statistics for ABV.
-7. Is there a relationship between IBU and ABV? Draw a scatterplot. (Use linear regression to quantify the relationship, provide R^2.)
+# The questions:
+## 1. How many breweries are present in each state? 
+(Alongside a nicely formatted table, consider a choropleth map if possible.)
+
+## 2. Merge beer data with breweries data. 
+Print first 6 observations and last 6 observations to check merged file.
+
+## 3. Report number of NAs in each column.
+
+## 4. Compute median alcohol content and international bitterness unit for each state. 
+Plot a bar chart to compare.
+
+## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
+(Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
+
+## 6. Summary statistics for ABV.
+
+## 7. Is there a relationship between IBU and ABV? 
+Draw a scatterplot. (Use linear regression to quantify the relationship, provide R^2.)
