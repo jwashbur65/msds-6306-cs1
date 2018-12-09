@@ -124,6 +124,8 @@ kable(abv_state_median, format="markdown")
 ``` {r}
 kable(ibu_state_median, format="markdown")
 ```
+```{r}
+```
 
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
