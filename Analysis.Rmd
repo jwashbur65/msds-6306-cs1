@@ -16,7 +16,7 @@ output:
 ```{r setup, include=FALSE, message=F}
 knitr::opts_chunk$set(echo = TRUE)
 
-# install.packages("psych")
+#install.packages("psych")
 library(knitr)
 library(ggplot2)
 library(dplyr)
@@ -108,9 +108,21 @@ num_nas
 Plot a bar chart to compare.
 
 ```{r medians_state}
+#Calculating the median and ignoring NA
+abv_state_median<-aggregate(merged_beers$ABV, list(merged_beers$State), median, na.rm=TRUE)
+ibu_state_median<-aggregate(merged_beers$IBU, list(merged_beers$State), median, na.rm=TRUE)
 
-
-
+names(abv_state_median)<-c("State", "Median ABV")
+names(ibu_state_median)<-c("State", "Median IBU")
+```
+### 4.1 ABV Median
+``` {r}
+#Output the results
+kable(abv_state_median, format="markdown")
+```
+### 4.2 IBU Median
+``` {r}
+kable(ibu_state_median, format="markdown")
 ```
 
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
