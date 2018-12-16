@@ -4,8 +4,8 @@ author: "Joseph Caguioa"
 date: "12/7/2018"
 output: 
   html_document:
-    theme: simplex
-    highlight: zenburn
+    theme: default
+    highlight: tango
     toc: true
     toc_depth: 3
     toc_float:
