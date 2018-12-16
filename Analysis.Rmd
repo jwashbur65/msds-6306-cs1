@@ -84,13 +84,13 @@ Print first 6 observations and last 6 observations to check merged file.
 
 ```{r merge}
 
-merged_beers <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
-merged_beers <- merged_beers[c("Beer_Name", "Beer_ID", "ABV", 
+merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
+merged_beers_raw <- merged_beers_raw[c("Beer_Name", "Beer_ID", "ABV", 
                                "IBU", "Style", "Ounces",
                                "Brewery_Name", "Brewery_ID", "City", "State")]
 
-kable(head(merged_beers, 6), format="markdown")
-kable(tail(merged_beers, 6), format="markdown")
+kable(head(merged_beers_raw, 6), format="markdown")
+kable(tail(merged_beers_raw, 6), format="markdown")
 
 ```
 
@@ -99,9 +99,8 @@ kable(tail(merged_beers, 6), format="markdown")
 ```{r numnas}
 
 # Report the number of NAs in each column.
-num_nas <- colSums(is.na(merged_beers))
+num_nas <- colSums(is.na(merged_beers_raw))
 num_nas
-
 ```
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
@@ -109,8 +108,8 @@ Plot a bar chart to compare.
 
 ```{r medians_state}
 #Calculating the median and ignoring NA
-abv_state_median<-aggregate(merged_beers$ABV, list(merged_beers$State), median, na.rm=TRUE)
-ibu_state_median<-aggregate(merged_beers$IBU, list(merged_beers$State), median, na.rm=TRUE)
+abv_state_median<-aggregate(merged_beers_raw$ABV, list(merged_beers_raw$State), median, na.rm=TRUE)
+ibu_state_median<-aggregate(merged_beers_raw$IBU, list(merged_beers_raw$State), median, na.rm=TRUE)
 
 names(abv_state_median)<-c("State", "Median ABV")
 names(ibu_state_median)<-c("State", "Median IBU")
@@ -131,16 +130,16 @@ kable(ibu_state_median, format="markdown")
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
 ```{r "abv-ibu echo=TRUE"}
-abv_max <- max(merged_beers$ABV, na.rm=TRUE)
-ibu_max <- max(merged_beers$IBU, na.rm=TRUE)
+abv_max <- max(merged_beers_raw$ABV, na.rm=TRUE)
+ibu_max <- max(merged_beers_raw$IBU, na.rm=TRUE)
 abv_max
 ibu_max
 
 #Convert State from Factor to Character
-merged_beers$State <- as.character(merged_beers$State)
+merged_beers_raw$State <- as.character(merged_beers_raw$State)
 
 #Determine the highest ABV in each State (return by State)
-abv.agg <- aggregate(ABV ~ State, merged_beers, max)
+abv.agg <- aggregate(ABV ~ State, merged_beers_raw, max)
 
 #Now Sort the states by ABV descending
 sorted_abv_agg<-abv.agg %>% arrange(desc(ABV))
@@ -149,7 +148,7 @@ kable( head(first_ten_abv, 10), format="markdown")
 
 
 #Determine the highest IBU in each State (return by State)
-ibu.agg <- aggregate(IBU ~ State, merged_beers, max)
+ibu.agg <- aggregate(IBU ~ State, merged_beers_raw, max)
 
 #Now Sort the states by IBU descending
 sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
@@ -169,6 +168,25 @@ abv_beers
 ```
 
 ## 6. Summary statistics for ABV.
+```{r "abv-summary-stats echo=TRUE"}
+summary(merged_beers_raw$ABV)
+```
 
 ## 7. Is there a relationship between IBU and ABV? 
 Draw a scatterplot. (Use linear regression to quantify the relationship, provide R^2.)
+```{r "IBU-to-ABV echo=TRUE"}
+abv_ibu_scatter <-
+ merged_beers_raw %>% ggplot(aes(x = ABV, y = IBU)) +
+ geom_point(na.rm = TRUE, alpha = 0.5, col="#F19800") +
+ xlab("Alcohol By Volume (ABV)") +
+ ylab("International Bitterness Units (IBU)") +
+ ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
+ # Test with both method="lm" and ="loess" for linear and smooth regressions.
+ geom_smooth(method = "lm", se = TRUE, level = 0.95,
+             aes(color = "CC720C", fill = "#F28E1C")
+             ) +
+ theme(plot.title = element_text(hjust = 0.5),
+       axis.ticks = element_blank()
+       )
+abv_ibu_scatter
+```
