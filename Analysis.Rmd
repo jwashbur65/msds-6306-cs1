@@ -217,7 +217,48 @@ Results - There appears to be a positive correlation between ABV and IBU.  The h
 * Cast
   + Dr. Cheun investor 
   
+## Style Analysis
 
+```{r style_analysis}
+
+# General counts of beer styles. Obtain top 20 by brewing frequency.
+beers_count_style <- count(merged_beers_raw, "Style")
+names(beers_count_style)[names(beers_count_style) == "freq"] <- c("Style_Count")
+beers_count_style_sorted <- beers_count_style %>% arrange(desc(Style_Count))
+beers_count_style_sorted_top20freq <- beers_count_style_sorted[1:20, ]
+
+# Total number of beer styles is 100.
+num_styles <- n_distinct(beers_count_style$Style)
+cat("The original data contains ", num_styles, " unique beer styles.")
+# num_styles_check <- n_distinct(beers_raw$Style)
+# cat("The raw version of beers contains ", num_styles_check, " unique beer styles. Does this match the other statement?")
+
+kable(beers_count_style_sorted_top20freq, format="markdown")
+
+# Bar graph visualization.
+style_bars <- beers_count_style_sorted_top20freq %>% ggplot(aes(x = reorder(Style, Style_Count), y = Style_Count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  ggtitle("Top 20 Styles by Frequency") +
+  xlab("Style") +
+  ylab("Beers Per Style") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank()
+        )
+style_bars
+
+```
+
+``` {r brewery_analysis}
+
+# Count instances of Brewery_Name to figure out how many beers each brewery makes.
+beers_in_brewery <- count(merged_beers_raw, "Brewery_Name")
+names(beers_in_brewery)[names(beers_in_brewery) == "freq"] <- c("Beer_Count")
+beers_in_brewery <- beers_in_brewery %>% arrange(desc(Beer_Count))
+beers_in_brewery_top20freq <- beers_in_brewery[1:20, ]
+kable(beers_in_brewery_top20freq, format="markdown")
+
+```
 
 ## Intro
 ## 3 main points
