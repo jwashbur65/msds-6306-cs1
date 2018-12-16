@@ -190,3 +190,5 @@ abv_ibu_scatter <-
        )
 abv_ibu_scatter
 ```
+Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).
+
