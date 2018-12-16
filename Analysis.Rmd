@@ -130,6 +130,43 @@ kable(ibu_state_median, format="markdown")
 
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
+```{r "abv-ibu echo=TRUE"}
+abv_max <- max(merged_beers$ABV, na.rm=TRUE)
+ibu_max <- max(merged_beers$IBU, na.rm=TRUE)
+abv_max
+ibu_max
+
+#Convert State from Factor to Character
+merged_beers$State <- as.character(merged_beers$State)
+
+#Determine the highest ABV in each State (return by State)
+abv.agg <- aggregate(ABV ~ State, merged_beers, max)
+
+#Now Sort the states by ABV descending
+sorted_abv_agg<-abv.agg %>% arrange(desc(ABV))
+first_ten_abv<-head(sorted_abv_agg, 10)
+kable( head(first_ten_abv, 10), format="markdown")
+
+
+#Determine the highest IBU in each State (return by State)
+ibu.agg <- aggregate(IBU ~ State, merged_beers, max)
+
+#Now Sort the states by IBU descending
+sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
+kable( head(sorted_ibu_agg, 10), format="markdown")
+
+
+#Now let's graph ABV (top 10)
+abv_beers <- first_ten_abv %>% ggplot(aes(x= reorder(State, desc(ABV)), y = ABV)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  ggtitle("States by ABV") +
+  xlab("State") +
+  ylab("ABV") +
+  theme(plot.title = element_text(hjust = 0.5), axis.ticks = element_blank()) + 
+  theme(axis.text.x = element_text(angle = -90))
+abv_beers
+```
 
 ## 6. Summary statistics for ABV.
 
