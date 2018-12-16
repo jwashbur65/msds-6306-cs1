@@ -124,9 +124,6 @@ kable(abv_state_median, format="markdown")
 kable(ibu_state_median, format="markdown")
 ```
 
-
-# Another comment here to test things.
-
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
 ```{r "abv-ibu echo=TRUE"}
@@ -190,5 +187,43 @@ abv_ibu_scatter <-
        )
 abv_ibu_scatter
 ```
-Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).
+Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).  
+
+# Storyline
+## Notes
+* Concept
+  + Dr Cheun is an established bar owner, looking to open a new bar(s) across the U.S.  We are an analysist firm helping Dr. Cheun open bars.  
+  + She is looking for:
+    + Open a new bar, that has easy access to most breweries for the type of beers to target certain customers
+    + Types of beer
+    + Bar location (Dr. Cheun is based out of Nevada, we think you should not open up a new bar here)
+    + Range of beer (which beers to have on tap)
+    + Need to map current locations of her existing bars (to reconfirm current selection of beers against consumer base)
+      + We analyzed our beers from ABV and IBU content and matched up the best selection based on your store location.
+      + Beer xzy would do good here vs, beer def will do better in your TX bar because they like to get drunk quick
+    + Demographics of this state is mostly xyz, and found this beer is a good fit for this abc beer
+* Company Name
+  + SM-Brew (new name in the works)
+* Call out that Dr Cheun is the client (gave use the data to be analyzed) and we are the vendor/sales/ folks that took data, cleaned, merged it, made sense of it
+  + 2 data files provided, had to merge them. 
+  + in IBU and ABV, there was x number of these when we merged them by beers across states, there was x number of NAs for number of beers.  
+  + We cleaned some things
+* Content that must be worked into storyline
+  + #1 Breweries per state
+  + #4 Median ABV and IBU per state
+  + #5 State w/ max ABV beer and most bitter 
+  + #6 Summary statistic for ABV
+  + #7 Relationship between ABV and IBU
+* Cast
+  + Dr. Cheun investor 
+  
+
+
+## Intro
+## 3 main points
+### Point 1
+### Point 2
+### Point 3
+
+## Conclusion
 
