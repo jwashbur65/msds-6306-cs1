@@ -1,6 +1,6 @@
 ---
 title: "Analysis"
-author: "Joseph Caguioa"
+author: "Lavonnia Newman, Joseph Caguioa, Jeff Washburn"
 date: "12/7/2018"
 output: 
   html_document:
