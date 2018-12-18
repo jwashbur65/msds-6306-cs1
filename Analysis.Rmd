@@ -195,7 +195,7 @@ Results - There appears to be a positive correlation between ABV and IBU.  The h
   + Dr Cheun is an established bar owner, looking to open a new bar(s) across the U.S.  We are an analysist firm helping Dr. Cheun open bars.  
   + She is looking for:
     + Open a new bar, that has easy access to most breweries for the type of beers to target certain customers
-    + Types of beer
+    + Types of beer (look at "The Top 20 Beer Styles by Frequency" chart below)
     + Bar location (Dr. Cheun is based out of Nevada, we think you should not open up a new bar here)
     + Range of beer (which beers to have on tap)
     + Need to map current locations of her existing bars (to reconfirm current selection of beers against consumer base)
@@ -260,17 +260,45 @@ kable(beers_in_brewery_top20freq, format="markdown", caption="The Top 20 Breweri
 # merge the raw beers with the beers in brewery count
 # merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
 merged_beers_prime_1 <- merge(beers_in_brewery, merged_beers_raw[, 7-10], by = c("Brewery_Name"), all = FALSE)
-#merged_beers_prime_2 <- merged_beers_prime_1 %>% arrange(desc(Beer_Count))
-kable(merged_beers_prime_1, format="markdown")
+merged_beers_prime_2 <- merged_beers_prime_1 %>% arrange(desc(Beer_Count))
+kable(merged_beers_prime_2, format="markdown")
 
 # #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
 
-## Intro
-## 3 main points
-### Point 1
-### Point 2
-### Point 3
+## Intro (2 mins)
+*  Dr Cheun is an established bar owner, looking to open a new vegan bar across the U.S. to cator to the lack of choices vegatarians have when it comes to entertainment and social nightlife.  We are an analysist firm helping Dr. Cheun to choose the best location based on brewery logistics/distribution, alcoholic content/bitterness (use the relationship between bitterness and alcoholic content), and lastly the style of beer 
 
-## Conclusion
+*  Our goal is to help you determine the best location and best bang for your buck on opening the new location based on the type of beer currently sold in the area to maximize drunkeness
+* 
+
+### Point 1 (4 mins)
+* best location based on brewery logistics/distribution
+  + Current logistics of brewery locations vs best possible bar opening location (reduce beer distribution cost)
+  + based on Dr Cheun's current beer locations, it makes sense (from brewery location) to open bar in these 4 possible states
+  + Current breakdown of breweries across the state (need table/chart)
+  
+* There are tax incentives to go with breweries that are located in the following 5 states (or, tx, nv, idaho).
+
+* The East coast cost is extremely high and are recommending that the bar remain in the central/west region
+
+### Point 2 (4 mins)
+* alcoholic content/bitterness 
+  + (use the relationship between bitterness and alcoholic content graph)
+  + Based on the comparison of ABV and ounces per beer.  
+  + First we looked the ABV median per state (4.1)
+  + Then we looked the IBU median per state (4.2) determined that 
+  
+* We found that people like a good mix between bitterness and alcholic content.  We also found that the higher the alcolohic content, the more the person would drink
+
+* We recommend a higher content beer
+
+
+### Point 3 (4 mins)
+* style of beer
+  + We researched the styles of beer across the united states (show the table of Top 20 beer styles by frequency)
+
+## Conclusion (2 mins)
+From the information provided, we conclude that you should open a vegan bar in Paris, TX with the following beers offered x, y, z, which you would purchase from breweries (x, y, and z) to reduce your liability of being tied to 1 brewery 
+
 
