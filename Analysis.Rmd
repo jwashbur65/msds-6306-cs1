@@ -89,8 +89,8 @@ merged_beers_raw <- merged_beers_raw[c("Beer_Name", "Beer_ID", "ABV",
                                "IBU", "Style", "Ounces",
                                "Brewery_Name", "Brewery_ID", "City", "State")]
 
-kable(head(merged_beers_raw, 6), format="markdown")
-kable(tail(merged_beers_raw, 6), format="markdown")
+kable(head(merged_beers_raw, 6), format="markdown", caption="First 6 Rows of Merged Data")
+kable(tail(merged_beers_raw, 6), format="markdown", caption="Last 6 Rows of Merged Data")
 
 ```
 
@@ -100,7 +100,7 @@ kable(tail(merged_beers_raw, 6), format="markdown")
 
 # Report the number of NAs in each column.
 num_nas <- colSums(is.na(merged_beers_raw))
-num_nas
+kable(num_nas, format="markdown", caption="Number of NAs Per Column")
 ```
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
@@ -117,11 +117,11 @@ names(ibu_state_median)<-c("State", "Median IBU")
 ### 4.1 ABV Median
 ``` {r}
 #Output the results
-kable(abv_state_median, format="markdown")
+kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
 ```
 ### 4.2 IBU Median
 ``` {r}
-kable(ibu_state_median, format="markdown")
+kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
 ```
 
 ## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
@@ -141,7 +141,7 @@ abv.agg <- aggregate(ABV ~ State, merged_beers_raw, max)
 #Now Sort the states by ABV descending
 sorted_abv_agg<-abv.agg %>% arrange(desc(ABV))
 first_ten_abv<-head(sorted_abv_agg, 10)
-kable( head(first_ten_abv, 10), format="markdown")
+kable( head(first_ten_abv, 10), format="markdown", caption="Top 10 State ABV Values")
 
 
 #Determine the highest IBU in each State (return by State)
@@ -149,7 +149,7 @@ ibu.agg <- aggregate(IBU ~ State, merged_beers_raw, max)
 
 #Now Sort the states by IBU descending
 sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
-kable( head(sorted_ibu_agg, 10), format="markdown")
+kable( head(sorted_ibu_agg, 10), format="markdown", caption="Top 10 State IBU Values")
 
 
 #Now let's graph ABV (top 10)
@@ -233,7 +233,7 @@ cat("The original data contains ", num_styles, " unique beer styles.")
 # num_styles_check <- n_distinct(beers_raw$Style)
 # cat("The raw version of beers contains ", num_styles_check, " unique beer styles. Does this match the other statement?")
 
-kable(beers_count_style_sorted_top20freq, format="markdown")
+kable(beers_count_style_sorted_top20freq, format="markdown", caption="The Top 20 Beer Styles by Frequency")
 
 # Bar graph visualization.
 style_bars <- beers_count_style_sorted_top20freq %>% ggplot(aes(x = reorder(Style, Style_Count), y = Style_Count)) +
@@ -256,7 +256,7 @@ beers_in_brewery <- count(merged_beers_raw, "Brewery_Name")
 names(beers_in_brewery)[names(beers_in_brewery) == "freq"] <- c("Beer_Count")
 beers_in_brewery <- beers_in_brewery %>% arrange(desc(Beer_Count))
 beers_in_brewery_top20freq <- beers_in_brewery[1:20, ]
-kable(beers_in_brewery_top20freq, format="markdown")
+kable(beers_in_brewery_top20freq, format="markdown", caption="The Top 20 Breweries by Number of Unique Beers Brewed")
 
 ```
 
