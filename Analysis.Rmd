@@ -249,8 +249,7 @@ style_bars
 
 ```
 
-``` {r brewery_analysis}
-
+```{r brewery_analysis}
 # Count instances of Brewery_Name to figure out how many beers each brewery makes.
 beers_in_brewery <- count(merged_beers_raw, "Brewery_Name")
 names(beers_in_brewery)[names(beers_in_brewery) == "freq"] <- c("Beer_Count")
@@ -258,6 +257,13 @@ beers_in_brewery <- beers_in_brewery %>% arrange(desc(Beer_Count))
 beers_in_brewery_top20freq <- beers_in_brewery[1:20, ]
 kable(beers_in_brewery_top20freq, format="markdown", caption="The Top 20 Breweries by Number of Unique Beers Brewed")
 
+# merge the raw beers with the beers in brewery count
+# merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
+merged_beers_prime_1 <- merge(beers_in_brewery, merged_beers_raw[, 7-10], by = c("Brewery_Name"), all = FALSE)
+#merged_beers_prime_2 <- merged_beers_prime_1 %>% arrange(desc(Beer_Count))
+kable(merged_beers_prime_1, format="markdown")
+
+# #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
 
 ## Intro
