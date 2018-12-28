@@ -13,17 +13,37 @@ output:
 
 ---
 
-```{r setup, include=FALSE, message=F}
+```{r setup, include=F, message=F}
 knitr::opts_chunk$set(echo = TRUE)
 
-#install.packages("psych")
-library(knitr)
-library(ggplot2)
-library(dplyr)
-library(plyr)
-library(psych)
+# Install packages if not already installed. Adapted from https://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them.
+list_of_packages <- c("dplyr", "ggplot2", "kableExtra", "knitr", "plyr", "psych", "usmap")
+new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+
+# Load multiple packages at once.
+lapply(list_of_packages, library, character.only=TRUE)
 
 ```
+
+```{r more_setup, echo=F}
+# jquery/DataTable infrastructure for dynamic kable output follows.
+# Consider integrating into custom_html.css if time allows.
+# Test to see whether this is desired for all instances of kable. Note that activating these deactivates the HTML table of contents for some reason.
+```
+<!-- <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css"> -->
+<!-- <script src="http://code.jquery.com/jquery-2.1.2.min.js"></script> -->
+<!-- <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script> -->
+
+<!-- <script type="text/javascript"> -->
+<!--          $(document).ready(function() { -->
+<!--              $("table").DataTable(); -->
+<!--          } ); -->
+<!-- </script> -->
+
+# Introduction
+
+"The introduction needs to be written as if you are presenting the work to someone who has given you the data to analyze and wants to understand the result. Assume it’s a presentation for a client. This may take some imagination of whom your client might be. If it sounds like a student presentation, that is not acceptable."
 
 # Placeholder. RMarkdown file should contain:
 * Formal introduction to client.
@@ -31,11 +51,18 @@ library(psych)
 * Explicit answers to following 7 questions, given in sentences outside code chunks.
 * Project conclusion summarizing findings.
 
+... provided us with two data sets:
+
+* Beers.csv: A table of 2,410 US craft beers
+* Breweries.csv: A table of 558 US breweries that make those beers
+
 # Data Cleansing
+
+First, the Beers.csv and Breweries.csv files are loaded into RMarkdown as data frames. Working copies of these data frames, beers_clean and breweries_clean, are created for workflow purposes. Aside from some instances of missing attributes, the data already looks tidy. Certain variables in each data frame are renamed in preparation for merging at a future step.
 
 ``` {r clean}
 
-# Create new working copies.
+# Initialize by loading data sets.
 beers_raw <- read.csv("./Analysis/Beers.csv", header=TRUE, sep=",")
 breweries_raw <- read.csv("./Analysis/Breweries.csv", header=TRUE, sep=",")
 
@@ -43,30 +70,54 @@ breweries_raw <- read.csv("./Analysis/Breweries.csv", header=TRUE, sep=",")
 beers_clean <- data.frame(beers_raw)
 breweries_clean <- data.frame(breweries_raw)
 
-# Change column name of brewery ID to match for merging.
+# Change column name of brewery ID to match for merging. Differentiate "Name" columns.
 names(beers_clean)[names(beers_clean) == "Brewery_id"] <- "Brewery_ID"
 names(beers_clean)[names(beers_clean) == "Name"] <- "Beer_Name"
 names(breweries_clean)[names(breweries_clean) == "Brew_ID"] <- "Brewery_ID"
 names(breweries_clean)[names(breweries_clean) == "Name"] <- "Brewery_Name"
 
-# Change data types of Names to character. Style, City, and State stay factors.
+# Change data types of Names to character. Style, City, and State remain factors.
 beers_clean$Beer_Name <- as.character(beers_clean$Beer_Name)
 breweries_clean$Brewery_Name <- as.character(breweries_clean$Brewery_Name)
 
 ```
 
-# The questions:
+# Questions of Interest:
 ## 1. How many breweries are present in each state? 
-(Alongside a nicely formatted table, consider a choropleth map if possible.)
 
-``` {r numbreweries}
+The number of breweries present in each state can be ascertained from the breweries_clean data frame (effectively directly from Breweries.csv). Each occurrence of the state's abbreviation under the State column is interpreted as the corresponding brewery being located in the state. Therefore, we can count how many times the abbreviation appears to obtain the number of breweries in that state.
 
-# How many breweries are there per state? Uses count() from plyr.
+``` {r number_of_breweries_1}
+
+# Count instances of state using count() from plyr.
 breweries_count_state <- count(breweries_clean, "State")
 names(breweries_count_state)[names(breweries_count_state) == "freq"] <- c("Num_Breweries")
 
-# Bar graph visualization.
-bps_bars <- breweries_count_state %>% ggplot(aes(x = reorder(State, Num_Breweries), y = Num_Breweries)) +
+# Choropleth map using the following libraries: ggplot2, usmap.
+# Clean state column to meet plot_usmap() argument requirements.
+breweries_count_state$State <- trimws(breweries_count_state$State)
+breweries_count_state$State <- as.character(breweries_count_state$State)
+names(breweries_count_state)[names(breweries_count_state) == "State"] <- c("state")
+# Then, create choropleth map.
+bcs_choro <- plot_usmap(data = breweries_count_state, values = "Num_Breweries", 
+                        lines = "brown") +
+  ggtitle("Number of Breweries Per State") +
+  scale_fill_continuous(
+    name = "Number of Breweries",
+    low = "white", high = "orange") +
+  theme(
+    legend.position="bottom",
+    plot.title = element_text(hjust = 0.5))
+bcs_choro
+
+```
+
+The above choropleth map provides a visual look at the number of breweries present in each state. Darker shading indicates more breweries. Note that the flat number of breweries is used, and is not adjusted by density or in terms of landmass or population.
+
+```{r number_of_breweries_2, echo=F, results="hide"}
+
+# Bar graph for all 50 states plus DC. Table output and choropleth map favored. 
+bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Breweries), y = Num_Breweries)) +
   geom_bar(stat = "identity") +
   coord_flip() +
   ggtitle("Number of Breweries Per State") +
@@ -75,12 +126,33 @@ bps_bars <- breweries_count_state %>% ggplot(aes(x = reorder(State, Num_Brewerie
   theme(plot.title = element_text(hjust = 0.5),
         axis.ticks = element_blank()
         )
-bps_bars
 
 ```
 
+``` {r number_of_breweries_3}
+
+# Kable output for breweries in each state.
+kable(breweries_count_state,
+      col.names = c("State",
+                    "Number of Breweries"),
+      caption="Number of breweries in each state (and Washington DC):",
+      table.attr="style='width:30%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+HOLD: NOTE THAT THE TABLE CANNOT BE SORTED IF THE JQUERY/DATATABLE COMMANDS ARE INACTIVE. THOSE CONFLICT WITH THE TOC FOR SOME REASON.
+
+This table provides the exact numbers. Its default setting has it sorted in descending alphabetical order by state abbreviation, but it can also be sorted by the number of breweries. The table can be queried for any particular state, but the following details are notable:
+
+* Colorado has the most breweries, 47. It is the only state in this data set containing more than 40 breweries.
+* California (39), Michigan (32), Oregon (29), and Texas (28) round out the rest of the top five.
+* Each state has at least one brewery in the data set.
+* North Dakota, South Dakota, Washington DC, and Wyoming are tied for the least breweries, with one apiece.
+
 ## 2. Merge beer data with breweries data. 
-Print first 6 observations and last 6 observations to check merged file.
+
+HOLD: NEEDS A SHORT WRITEUP EXPLAINING WHAT IS ABOUT TO HAPPEN
 
 ```{r merge}
 
@@ -94,7 +166,11 @@ kable(tail(merged_beers_raw, 6), format="markdown", caption="Last 6 Rows of Merg
 
 ```
 
+The first and last six observations are printed to show that the merge was successful.
+
 ## 3. Report number of NAs in each column.
+
+HOLD: NEEDS A SHORT WRITEUP EXPLAINING WHAT IS ABOUT TO HAPPEN
 
 ```{r numnas}
 
@@ -102,6 +178,8 @@ kable(tail(merged_beers_raw, 6), format="markdown", caption="Last 6 Rows of Merg
 num_nas <- colSums(is.na(merged_beers_raw))
 kable(num_nas, format="markdown", caption="Number of NAs Per Column")
 ```
+
+Only the ABV and IBU columns contain NAs, with 62 and 1005, respectively. All other variables contain data.
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
 Plot a bar chart to compare.
@@ -189,33 +267,9 @@ abv_ibu_scatter
 ```
 Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).  
 
-# Storyline
-## Notes
-* Concept
-  + Dr Cheun is an established bar owner, looking to open a new bar(s) across the U.S.  We are an analysist firm helping Dr. Cheun open bars.  
-  + She is looking for:
-    + Open a new bar, that has easy access to most breweries for the type of beers to target certain customers
-    + Types of beer (look at "The Top 20 Beer Styles by Frequency" chart below)
-    + Bar location (Dr. Cheun is based out of Nevada, we think you should not open up a new bar here)
-    + Range of beer (which beers to have on tap)
-    + Need to map current locations of her existing bars (to reconfirm current selection of beers against consumer base)
-      + We analyzed our beers from ABV and IBU content and matched up the best selection based on your store location.
-      + Beer xzy would do good here vs, beer def will do better in your TX bar because they like to get drunk quick
-    + Demographics of this state is mostly xyz, and found this beer is a good fit for this abc beer
-* Company Name
-  + SM-Brew (new name in the works)
-* Call out that Dr Cheun is the client (gave use the data to be analyzed) and we are the vendor/sales/ folks that took data, cleaned, merged it, made sense of it
-  + 2 data files provided, had to merge them. 
-  + in IBU and ABV, there was x number of these when we merged them by beers across states, there was x number of NAs for number of beers.  
-  + We cleaned some things
-* Content that must be worked into storyline
-  + #1 Breweries per state
-  + #4 Median ABV and IBU per state
-  + #5 State w/ max ABV beer and most bitter 
-  + #6 Summary statistic for ABV
-  + #7 Relationship between ABV and IBU
-* Cast
-  + Dr. Cheun investor 
+(WE CAN ALSO DO A PEARSON'S R FOR ABV~IBU AND COEFFICIENT OF DETERMINATION FOR THE GRAPH'S BEST-FIT LINEAR REGRESSION LINE)
+
+# Additional Analysis
   
 ## Style Analysis
 
@@ -249,6 +303,8 @@ style_bars
 
 ```
 
+## Brewery Analysis
+
 ```{r brewery_analysis}
 # Count instances of Brewery_Name to figure out how many beers each brewery makes.
 beers_in_brewery <- count(merged_beers_raw, "Brewery_Name")
@@ -265,6 +321,38 @@ kable(merged_beers_prime_2, format="markdown")
 
 # #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
+
+# Conclusion
+
+"Summarize your findings from this exercise."
+
+# Storyline
+## Notes
+* Concept
+  + Dr Cheun is an established bar owner, looking to open a new bar(s) across the U.S.  We are an analysist firm helping Dr. Cheun open bars.  
+  + She is looking for:
+    + Open a new bar, that has easy access to most breweries for the type of beers to target certain customers
+    + Types of beer (look at "The Top 20 Beer Styles by Frequency" chart below)
+    + Bar location (Dr. Cheun is based out of Nevada, we think you should not open up a new bar here)
+    + Range of beer (which beers to have on tap)
+    + Need to map current locations of her existing bars (to reconfirm current selection of beers against consumer base)
+      + We analyzed our beers from ABV and IBU content and matched up the best selection based on your store location.
+      + Beer xzy would do good here vs, beer def will do better in your TX bar because they like to get drunk quick
+    + Demographics of this state is mostly xyz, and found this beer is a good fit for this abc beer
+* Company Name
+  + SM-Brew (new name in the works)
+* Call out that Dr Cheun is the client (gave use the data to be analyzed) and we are the vendor/sales/ folks that took data, cleaned, merged it, made sense of it
+  + 2 data files provided, had to merge them. 
+  + in IBU and ABV, there was x number of these when we merged them by beers across states, there was x number of NAs for number of beers.  
+  + We cleaned some things
+* Content that must be worked into storyline
+  + #1 Breweries per state
+  + #4 Median ABV and IBU per state
+  + #5 State w/ max ABV beer and most bitter 
+  + #6 Summary statistic for ABV
+  + #7 Relationship between ABV and IBU
+* Cast
+  + Dr. Cheun investor 
 
 ## Intro (2 mins)
 *  Dr Cheun is an established bar owner, looking to open a new vegan bar across the U.S. to cator to the lack of choices vegatarians have when it comes to entertainment and social nightlife.  We are an analysist firm helping Dr. Cheun to choose the best location based on brewery logistics/distribution, alcoholic content/bitterness (use the relationship between bitterness and alcoholic content), and lastly the style of beer 
