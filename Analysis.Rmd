@@ -51,12 +51,14 @@ lapply(list_of_packages, library, character.only=TRUE)
 * Explicit answers to following 7 questions, given in sentences outside code chunks.
 * Project conclusion summarizing findings.
 
+BLAHBLAHBLAH FORMAL INTRODUCTION HERE
 ... provided us with two data sets:
 
 * Beers.csv: A table of 2,410 US craft beers
 * Breweries.csv: A table of 558 US breweries that make those beers
+BLAHBLAHBLAH MENTION THAT THE CLIENT GAVE 7 QUESTIONS, SO THESE ARE EXPLICITLY GIVEN IN THE FILE TO MAKE ANSWERS EASIER FOR THEM TO FIND
 
-# Data Cleansing
+# Data Input & Cleansing
 
 First, the Beers.csv and Breweries.csv files are loaded into RMarkdown as data frames. Working copies of these data frames, beers_clean and breweries_clean, are created for workflow purposes. Aside from some instances of missing attributes, the data already looks tidy. Certain variables in each data frame are renamed in preparation for merging at a future step.
 
@@ -93,11 +95,11 @@ The number of breweries present in each state can be ascertained from the brewer
 breweries_count_state <- count(breweries_clean, "State")
 names(breweries_count_state)[names(breweries_count_state) == "freq"] <- c("Num_Breweries")
 
-# Choropleth map using the following libraries: ggplot2, usmap.
-# Clean state column to meet plot_usmap() argument requirements.
+# Choropleth map using usmap library, which returns ggplot objects. First clean state column to meet plot_usmap() argument requirements.
 breweries_count_state$State <- trimws(breweries_count_state$State)
 breweries_count_state$State <- as.character(breweries_count_state$State)
 names(breweries_count_state)[names(breweries_count_state) == "State"] <- c("state")
+
 # Then, create choropleth map.
 bcs_choro <- plot_usmap(data = breweries_count_state, values = "Num_Breweries", 
                         lines = "brown") +
@@ -112,11 +114,11 @@ bcs_choro
 
 ```
 
-The above choropleth map provides a visual look at the number of breweries present in each state. Darker shading indicates more breweries. Note that the flat number of breweries is used, and is not adjusted by density or in terms of landmass or population.
+The above choropleth map provides a visual look at the number of breweries present in each state. Darker shading indicates more breweries. Note that the flat number of breweries is used for the entire state, and it is not adjusted by density or in terms of landmass, population, or location within the state.
 
 ```{r number_of_breweries_2, echo=F, results="hide"}
 
-# Bar graph for all 50 states plus DC. Table output and choropleth map favored. 
+# Bar graph for all 50 states plus DC. Table output and choropleth map favored. An early placeholder visualization hidden in the final html document.
 bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Breweries), y = Num_Breweries)) +
   geom_bar(stat = "identity") +
   coord_flip() +
@@ -141,7 +143,7 @@ kable(breweries_count_state,
 
 ```
 
-HOLD: NOTE THAT THE TABLE CANNOT BE SORTED IF THE JQUERY/DATATABLE COMMANDS ARE INACTIVE. THOSE CONFLICT WITH THE TOC FOR SOME REASON.
+HOLD: NOTE THAT THE TABLE CANNOT BE SORTED IF THE JQUERY/DATATABLE COMMANDS ARE INACTIVE. THOSE CONFLICT WITH THE TOC FOR SOME REASON. (REWRITE THE PORTION OF THE FOLLOWING ANSWER THAT REFERENCES IT.)
 
 This table provides the exact numbers. Its default setting has it sorted in descending alphabetical order by state abbreviation, but it can also be sorted by the number of breweries. The table can be queried for any particular state, but the following details are notable:
 
@@ -152,34 +154,49 @@ This table provides the exact numbers. Its default setting has it sorted in desc
 
 ## 2. Merge beer data with breweries data. 
 
-HOLD: NEEDS A SHORT WRITEUP EXPLAINING WHAT IS ABOUT TO HAPPEN
+The breweries and beers in these data sets have a one-to-many relationship; each brewery can produce multiple beers, but each beer is only linked to a single brewery. Both data sets share brewery ID as a common variable, so it can be used to merge the breweries data set into the beers data set for further analysis.
 
 ```{r merge}
 
+# Merge data sets using shared Brewery_ID column.
 merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
+
+# Reorder columns: all beer-related variables, then all brewery-related variables.
 merged_beers_raw <- merged_beers_raw[c("Beer_Name", "Beer_ID", "ABV", 
                                "IBU", "Style", "Ounces",
                                "Brewery_Name", "Brewery_ID", "City", "State")]
 
-kable(head(merged_beers_raw, 6), format="markdown", caption="First 6 Rows of Merged Data")
-kable(tail(merged_beers_raw, 6), format="markdown", caption="Last 6 Rows of Merged Data")
+# Check merged file by printing first and last six observations.
+kable(head(merged_beers_raw, 6), 
+      caption="First 6 Rows of Merged Data",
+      row.names = T) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+kable(tail(merged_beers_raw, 6), 
+      caption="Last 6 Rows of Merged Data",
+      row.names = T) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
-The first and last six observations are printed to show that the merge was successful.
+The first and last six observations are printed to show that the merge was successful. Note that because the brewery ID was used as the merging column, the merged data frame is sorted in ascending order by that variable. Brewery_ID = 1 appears for the first six rows, while Brewery_ID = 558 appears in the final row of the last six, 558 being the number of breweries in the original Breweries.csv file. Furthermore, the row numbers for the last six observations indicate that all 2,410 craft beers from the original Beers.csv file made it into this merged data frame.
 
 ## 3. Report number of NAs in each column.
 
-HOLD: NEEDS A SHORT WRITEUP EXPLAINING WHAT IS ABOUT TO HAPPEN
+The above table of the last six observations displays "NA," or not available, for the IBU variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
 ```{r numnas}
 
 # Report the number of NAs in each column.
 num_nas <- colSums(is.na(merged_beers_raw))
-kable(num_nas, format="markdown", caption="Number of NAs Per Column")
+kable(num_nas, 
+      col.names = c("Number of NAs"),
+      caption="Number of NAs Per Column",
+      table.attr="style='width:30%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
 ```
 
-Only the ABV and IBU columns contain NAs, with 62 and 1005, respectively. All other variables contain data.
+Any instances of NA are counted and reported in this table, which shows that only the ABV and IBU columns contain NAs, with 62 and 1005, respectively. All other variables contain data.
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
 Plot a bar chart to compare.
@@ -202,7 +219,7 @@ kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
 kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
 ```
 
-## 5. Which state has maximum ABV beer? Most bitter beer in IBU? 
+## 5. Which state has the most alcoholic beer by ABV? Most bitter beer by IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
 ```{r "abv-ibu echo=TRUE"}
 abv_max <- max(merged_beers_raw$ABV, na.rm=TRUE)
@@ -268,6 +285,22 @@ abv_ibu_scatter
 Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).  
 
 (WE CAN ALSO DO A PEARSON'S R FOR ABV~IBU AND COEFFICIENT OF DETERMINATION FOR THE GRAPH'S BEST-FIT LINEAR REGRESSION LINE)
+
+``` {r correlation}
+
+# Use cor() from base stats to calculate Pearson correlation coefficient.
+r <- cor(merged_beers_raw$ABV, merged_beers_raw$IBU, 
+         use = "pairwise.complete.obs",
+         method = "pearson")
+
+# Square Pearson's r to obtain coefficient of determination.
+R_2 <- r^2
+
+# Present r and R_2.
+r
+R_2
+
+```
 
 # Additional Analysis
   
