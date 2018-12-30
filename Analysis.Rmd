@@ -31,15 +31,15 @@ lapply(list_of_packages, library, character.only=TRUE)
 # Consider integrating into custom_html.css if time allows.
 # Test to see whether this is desired for all instances of kable. Note that activating these deactivates the HTML table of contents for some reason.
 ```
-<!-- <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css"> -->
-<!-- <script src="http://code.jquery.com/jquery-2.1.2.min.js"></script> -->
-<!-- <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script> -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css">
+<script src="http://code.jquery.com/jquery-2.1.2.min.js"></script>
+<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
 
-<!-- <script type="text/javascript"> -->
-<!--          $(document).ready(function() { -->
-<!--              $("table").DataTable(); -->
-<!--          } ); -->
-<!-- </script> -->
+<script type="text/javascript">
+         $(document).ready(function() {
+             $("table").DataTable();
+         } );
+</script>
 
 # Introduction
 
@@ -259,9 +259,21 @@ abv_beers <- first_ten_abv %>% ggplot(aes(x= reorder(State, desc(ABV)), y = ABV)
 abv_beers
 ```
 
-## 6. Summary statistics for ABV.
+## 6. Summary statistics for ABV (and IBU).
 ```{r "abv-summary-stats echo=TRUE"}
+
+# summary() shows five-number summary, mean, and NAs.
 summary(merged_beers_raw$ABV)
+summary(merged_beers_raw$IBU)
+
+# Five-number summary can also be displayed in a boxplot.
+ggplot(merged_beers_raw, aes(x="", y=ABV)) +
+  geom_boxplot() +
+  ggtitle("Placeholder ABU boxplot")
+ggplot(merged_beers_raw, aes(x="", y=IBU)) +
+  geom_boxplot() +
+  ggtitle("Placeholder IBU boxplot")
+
 ```
 
 ## 7. Is there a relationship between IBU and ABV? 
@@ -422,4 +434,9 @@ kable(merged_beers_prime_2, format="markdown")
 ## Conclusion (2 mins)
 From the information provided, we conclude that you should open a vegan bar in Paris, TX with the following beers offered x, y, z, which you would purchase from breweries (x, y, and z) to reduce your liability of being tied to 1 brewery 
 
+```{r test}
 
+texas <- subset(merged_beers_raw, State = 44, select = c("Beer_Name", "ABV", "IBU", "Style", "Brewery_Name", "City", "State"))
+
+
+```
