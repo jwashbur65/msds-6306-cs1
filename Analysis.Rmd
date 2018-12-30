@@ -16,6 +16,9 @@ output:
 ```{r setup, include=F, message=F}
 knitr::opts_chunk$set(echo = TRUE)
 
+# Set default cran mirror: https://stackoverflow.com/questions/8475102/set-default-cran-mirror-permanent-in-r
+options(repos=structure(c("https://cran.rerevolutionanalytics.com"), .Names = c("CRAN")))
+
 # Install packages if not already installed. Adapted from https://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them.
 list_of_packages <- c("dplyr", "ggplot2", "kableExtra", "knitr", "plyr", "psych", "usmap")
 new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
@@ -31,19 +34,25 @@ lapply(list_of_packages, library, character.only=TRUE)
 # Consider integrating into custom_html.css if time allows.
 # Test to see whether this is desired for all instances of kable. Note that activating these deactivates the HTML table of contents for some reason.
 ```
-<!-- <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css"> -->
-<!-- <script src="http://code.jquery.com/jquery-2.1.2.min.js"></script> -->
-<!-- <script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script> -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css">
+<script src="http://code.jquery.com/jquery-2.1.2.min.js"></script>
+<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
 
-<!-- <script type="text/javascript"> -->
-<!--          $(document).ready(function() { -->
-<!--              $("table").DataTable(); -->
-<!--          } ); -->
-<!-- </script> -->
+<script type="text/javascript">
+         $(document).ready(function() {
+             $("table").DataTable();
+         } );
+</script>
+
 
 # Introduction
 
-"The introduction needs to be written as if you are presenting the work to someone who has given you the data to analyze and wants to understand the result. Assume it’s a presentation for a client. This may take some imagination of whom your client might be. If it sounds like a student presentation, that is not acceptable."
+Brief overview of her company
+
+Overview of her problems
+
+Why we were brought on, solution to problem
+
 
 # Placeholder. RMarkdown file should contain:
 * Formal introduction to client.
