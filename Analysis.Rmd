@@ -296,8 +296,6 @@ abv_ibu_scatter
 ```
 Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).  
 
-(WE CAN ALSO DO A PEARSON'S R FOR ABV~IBU AND COEFFICIENT OF DETERMINATION FOR THE GRAPH'S BEST-FIT LINEAR REGRESSION LINE)
-
 ``` {r correlation}
 
 # Use cor() from base stats to calculate Pearson correlation coefficient.
