@@ -1,7 +1,7 @@
 ---
 title: "MainVariableDescriptions"
-author: "Joseph Caguioa"
-date: "12/7/2018"
+author: "Lavonnia Newman, Joseph Caguioa, Jeff Washburn"
+date: "1/7/2019"
 output: html_document
 ---
 
@@ -19,8 +19,8 @@ Provided by the client, this dataset contains observations on 2410 US craft beer
 * ABV: Alcohol by volume.
 * IBU: International Bitterness Units.
 * Brewery_ID: ID of brewery associated with the beer.
-* Style: The beer style
-* Ounces:
+* Style: The beer style.
+* Ounces: Default amount each beer is sold as.
 
 ## Breweries.csv
 ***
@@ -28,9 +28,9 @@ Provided by the client, this dataset contains observations on 2410 US craft beer
 Provided by the client, this dataset contains observations on 558 US breweries with the following variables:
 
 * Brew_ID: A unique numerical identifier for the brewery.
-* Name:
-* City:
-* State:
+* Name: The brewery's name.
+* City: The brewery's home city.
+* State: The brewery's home state.
 
 ## Merged.csv
 ***
@@ -41,16 +41,16 @@ The merged version of the Beers.csv and Breweries.csv files, created by [the Mer
 ## Variable Summary
 ***
 
-Original Name   | File      | Original Class   | Merged Name   | Merged Class
-:-------------- | --------- | ---------------- | ------------- | --------------
-Name            | Beer      |
-Beer_ID         | Beer      |
-ABV             | Beer      |
-IBU             | Beer      |
-Brewery_ID      | Beer      |
-Style           | Beer      |
-Ounces          | Beer      |
-Brew_ID         | Breweries |
-Name            | Breweries |
-City            | Breweries |
-State           | Breweries |
+Original Name   | File      | Original Class | Merged Name   | Merged Class
+:-------------- | --------- | -------------- | ------------- | --------------
+Name            | Beer      | factor         | Beer_Name     | chr
+Beer_ID         | Beer      | int            | Beer_ID       | int
+ABV             | Beer      | num            | ABV           | num
+IBU             | Beer      | int            | IBU           | int
+Brewery_ID      | Beer      | int            | Brewery_ID    | int
+Style           | Beer      | factor         | Style         | factor
+Ounces          | Beer      | num            | Ounces        | num
+Brew_ID         | Breweries | int            | Brewery_ID    | int
+Name            | Breweries | factor         | Brewery_Name  | chr
+City            | Breweries | factor         | City          | factor
+State           | Breweries | factor         | State         | factor

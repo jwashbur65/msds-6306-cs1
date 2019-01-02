@@ -1,7 +1,7 @@
 ---
 title: "Analysis"
 author: "Lavonnia Newman, Joseph Caguioa, Jeff Washburn"
-date: "12/7/2018"
+date: "1/7/2019"
 output: 
   html_document:
     theme: default
@@ -43,34 +43,44 @@ lapply(list_of_packages, library, character.only=TRUE)
 
 # Introduction
 
-"The introduction needs to be written as if you are presenting the work to someone who has given you the data to analyze and wants to understand the result. Assume it’s a presentation for a client. This may take some imagination of whom your client might be. If it sounds like a student presentation, that is not acceptable."
+```{r logo1, out.width="150px", fig.align="center", echo=F}
+knitr::include_graphics("Images/CheunChugs&Cheers.png")
+```
 
-# Placeholder. RMarkdown file should contain:
-* Formal introduction to client.
-* Code explanations as sentences before or after chunks.
-* Explicit answers to following 7 questions, given in sentences outside code chunks.
-* Project conclusion summarizing findings.
+Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simply "the client") is an American hospitality company. Founded and based in Reno, NV, by eponymous owner Jacquelyn Cheun, CCAC owns and operates a number of popular bars along the East Coast, including:
 
-BLAHBLAHBLAH FORMAL INTRODUCTION HERE
-... provided us with two data sets:
+* Reproducible Refreshment with OurStudio
+* Statistics Never Lie
+* Below the Tableau
+* Spam and Eggs
+* Munging by Moonlight
 
-* Beers.csv: A table of 2,410 US craft beers
-* Breweries.csv: A table of 558 US breweries that make those beers
-BLAHBLAHBLAH MENTION THAT THE CLIENT GAVE 7 QUESTIONS, SO THESE ARE EXPLICITLY GIVEN IN THE FILE TO MAKE ANSWERS EASIER FOR THEM TO FIND
+CCAC prefers partnering with and sourcing from breweries in the same states as its bars to give guests a taste of local flavor and home state pride, a decision that continues to receive widespread acclaim from consumers. Surveys repeatedly cite the wide selection of high-quality local beers as the number one feature that keeps drawing regulars and newcomers alike through the doors. 
 
-To assist our client in finding answers to the questions outlined in the client's initial request, the seven questions are explicitly stated with their answers below.
+In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment's working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC's existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day, contingent on the new bar being located in their state.
+
+```{r logo2, out.width="150px", fig.align="center", echo=F}
+knitr::include_graphics("Images/SMBrew.png")
+```
+
+To assist with its decision in choosing a state to host The Meta Scientist, CCAC has enlisted the aid of SMBrew Consulting (the authors of this document), a firm specializing in the hospitality industry. The client has provided us with two data sets:
+
+* Breweries.csv: A table of 558 US breweries that have indicated interest in providing beer for The Meta Scientist.
+* Beers.csv: A table of the 2,410 US craft beers those breweries make.
+
+Additionally, CCAC has outlined several questions of interest about the data in its initial consultation document. For ease of use to our client, those questions are explicitly numbered and answered below.
 
 # Data Input & Cleansing
 
-First, the Beers.csv and Breweries.csv files are loaded into RMarkdown as data frames. Working copies of these data frames, beers_clean and breweries_clean, are created for workflow purposes. Aside from some instances of missing attributes, the data already looks tidy. Certain variables in each data frame are renamed in preparation for merging at a future step.
+First, the Beers.csv and Breweries.csv files are loaded into our analysis language and environment of choice, R and RStudio, as data frames. Aside from some instances of missing attributes, the data already looks tidy. Certain variables in each data frame are renamed in preparation for merging at a future step.
 
-``` {r clean}
+``` {r loading_and_cleaning}
 
 # Initialize by loading data sets.
 beers_raw <- read.csv("./Analysis/Beers.csv", header=TRUE, sep=",")
 breweries_raw <- read.csv("./Analysis/Breweries.csv", header=TRUE, sep=",")
 
-# Create new working copies.
+# Nothing major to clean. Create working copies.
 beers_clean <- data.frame(beers_raw)
 breweries_clean <- data.frame(breweries_raw)
 
@@ -89,7 +99,7 @@ breweries_clean$Brewery_Name <- as.character(breweries_clean$Brewery_Name)
 # Questions of Interest:
 ## 1. How many breweries are present in each state? 
 
-The number of breweries present in each state can be ascertained from the breweries_clean data frame (effectively directly from Breweries.csv). Each occurrence of the state's abbreviation under the State column is interpreted as the corresponding brewery being located in the state. Therefore, we can count how many times the abbreviation appears to obtain the number of breweries in that state.
+The number of breweries present in each state can be ascertained directly from the data frame of Breweries.csv. (For simplicity, Washington D.C. is referred to as a state, bringing the total number of states to 51.) Each occurrence of the state's abbreviation under the State column is interpreted as the corresponding brewery being located in the state. Therefore, we can count how many times the abbreviation appears to obtain the number of breweries in that state.
 
 ``` {r number_of_breweries_1}
 
@@ -116,7 +126,7 @@ bcs_choro
 
 ```
 
-The above choropleth map provides a visual look at the number of breweries present in each state. Darker shading indicates more breweries. Note that the flat number of breweries is used for the entire state, and it is not adjusted by density or in terms of landmass, population, or location within the state.
+The above choropleth map provides a visual look at the number of breweries present in each state. Darker color indicates more breweries. Note that the flat number of breweries is used for the entire state; it is not adjusted by density or in terms of landmass, population, or location within the state.
 
 ```{r number_of_breweries_2, echo=F, results="hide"}
 
@@ -139,7 +149,7 @@ bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Brewerie
 kable(breweries_count_state,
       col.names = c("State",
                     "Number of Breweries"),
-      caption="Number of breweries in each state (and Washington DC):",
+      caption="Number of breweries in each state:",
       table.attr="style='width:30%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
@@ -150,7 +160,7 @@ HOLD: NOTE THAT THE TABLE CANNOT BE SORTED IF THE JQUERY/DATATABLE COMMANDS ARE 
 This table provides the exact numbers. Its default setting has it sorted in descending alphabetical order by state abbreviation, but it can also be sorted by the number of breweries. The table can be queried for any particular state, but the following details are notable:
 
 * Colorado has the most breweries, 47. It is the only state in this data set containing more than 40 breweries.
-* California (39), Michigan (32), Oregon (29), and Texas (28) round out the rest of the top five.
+* California (39), Michigan (32), Oregon (29), Texas (28), Pennsylvania (25), Massachusetts (23), Washington state (23), Indiana (22), and Wisconsin (20) round out the rest of the top ten.
 * Each state has at least one brewery in the data set.
 * North Dakota, South Dakota, Washington DC, and Wyoming are tied for the least breweries, with one apiece.
 
@@ -180,11 +190,11 @@ kable(tail(merged_beers_raw, 6),
 
 ```
 
-The first and last six observations are printed to show that the merge was successful. Note that because the brewery ID was used as the merging column, the merged data frame is sorted in ascending order by that variable. Brewery_ID = 1 appears for the first six rows, while Brewery_ID = 558 appears in the final row of the last six, 558 being the number of breweries in the original Breweries.csv file. Furthermore, the row numbers for the last six observations indicate that all 2,410 craft beers from the original Beers.csv file made it into this merged data frame.
+The first and last six observations of the merged data frame are printed to show that the merge was successful. Note that because the brewery ID was used as the merging column, the new data frame is sorted in ascending order by that variable. Brewery_ID = 1 appears for the first six rows, while Brewery_ID = 558 appears in the final row of the last six, 558 being the number of breweries in the original Breweries.csv file. Furthermore, the row numbers for the last six observations indicate that all 2,410 craft beers from the original Beers.csv file made it into this merged data frame.
 
 ## 3. Report number of NAs in each column.
 
-The above table of the last six observations displays "NA," or not available, for the IBU variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
+The above table of the last six observations displays "NA," or not available, for the International Bitterness Unit (IBU) variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
 ```{r num_nas}
 
@@ -198,7 +208,7 @@ kable(num_nas,
 
 ```
 
-Any instances of NA are counted and reported in this table, which shows that only the ABV and IBU columns contain NAs, with 62 and 1005, respectively. All other variables contain data.
+Any instances of NA are counted and reported in this table, which shows that only the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. None of the other columns have missing values.
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
 Plot a bar chart to compare.
@@ -260,6 +270,8 @@ abv_beers <- first_ten_abv %>% ggplot(aes(x= reorder(State, desc(ABV)), y = ABV)
   theme(axis.text.x = element_text(angle = -90))
 abv_beers
 ```
+
+Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
 ## 6. Summary statistics.
 ```{r "abv-summary-stats echo=TRUE"}
@@ -446,10 +458,3 @@ kable(merged_beers_prime_2, format="markdown")
 
 ## Conclusion (2 mins)
 From the information provided, we conclude that you should open a vegan bar in Paris, TX with the following beers offered x, y, z, which you would purchase from breweries (x, y, and z) to reduce your liability of being tied to 1 brewery 
-
-```{r test}
-
-texas <- subset(merged_beers_raw, State = 44, select = c("Beer_Name", "ABV", "IBU", "Style", "Brewery_Name", "City", "State"))
-
-
-```
