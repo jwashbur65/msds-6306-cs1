@@ -47,7 +47,7 @@ lapply(list_of_packages, library, character.only=TRUE)
 knitr::include_graphics("Images/CheunChugs&Cheers.png")
 ```
 
-Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simply "the client") is an American hospitality company. Founded and based in Reno, NV, by eponymous owner Jacquelyn Cheun, CCAC owns and operates a number of popular bars along the East Coast, including:
+Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simply "the client") is an American hospitality company. Founded in 2008 in Reno, NV, by eponymous owner Jacquelyn Cheun, CCAC owns and operates a number of popular bars along the East Coast, including:
 
 * Reproducible Refreshment with OurStudio
 * Statistics Never Lie
@@ -55,9 +55,9 @@ Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simpl
 * Spam and Eggs
 * Munging by Moonlight
 
-CCAC prefers partnering with and sourcing from breweries in the same states as its bars to give guests a taste of local flavor and home state pride, a decision that continues to receive widespread acclaim from consumers. Surveys repeatedly cite the wide selection of high-quality local beers as the number one feature that keeps drawing regulars and newcomers alike through the doors. 
+CCAC prefers sourcing the majority of its food and liquor from partners in the same states as its bars to give guests a taste of local flavor and home state pride, a decision that continues to receive widespread acclaim from consumers. Surveys repeatedly cite the wide selection of different, high-quality local beers as the number one feature that keeps drawing regulars and newcomers alike through the doors. 
 
-In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment's working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC's existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day, contingent on the new bar being located in their state.
+In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment's working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC's existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day.
 
 ```{r logo2, out.width="150px", fig.align="center", echo=F}
 knitr::include_graphics("Images/SMBrew.png")
@@ -77,12 +77,19 @@ First, the Beers.csv and Breweries.csv files are loaded into our analysis langua
 ``` {r loading_and_cleaning}
 
 # Initialize by loading data sets.
-beers_raw <- read.csv("./Analysis/Beers.csv", header=TRUE, sep=",")
-breweries_raw <- read.csv("./Analysis/Breweries.csv", header=TRUE, sep=",")
+beers_raw <- read.csv("./Analysis/Beers.csv", 
+                      header=TRUE, 
+                      sep=",", 
+                      na.strings=c("","NA"))
+breweries_raw <- read.csv("./Analysis/Breweries.csv", 
+                          header=TRUE, 
+                          sep=",", 
+                          na.strings=c("","NA"))
 
-# Nothing major to clean. Create working copies.
+# Create working copies. Remove white space from State column.
 beers_clean <- data.frame(beers_raw)
 breweries_clean <- data.frame(breweries_raw)
+breweries_clean$State <- as.factor(trimws(breweries_clean$State))
 
 # Change column name of brewery ID to match for merging. Differentiate "Name" columns.
 names(beers_clean)[names(beers_clean) == "Brewery_id"] <- "Brewery_ID"
@@ -108,20 +115,19 @@ breweries_count_state <- count(breweries_clean, "State")
 names(breweries_count_state)[names(breweries_count_state) == "freq"] <- c("Num_Breweries")
 
 # Choropleth map using usmap library, which returns ggplot objects. First clean state column to meet plot_usmap() argument requirements.
-breweries_count_state$State <- trimws(breweries_count_state$State)
 breweries_count_state$State <- as.character(breweries_count_state$State)
 names(breweries_count_state)[names(breweries_count_state) == "State"] <- c("state")
 
 # Then, create choropleth map.
-bcs_choro <- plot_usmap(data = breweries_count_state, values = "Num_Breweries", 
+bcs_choro <- plot_usmap(data = breweries_count_state, 
+                        values = "Num_Breweries", 
                         lines = "brown") +
-  ggtitle("Number of Breweries Per State") +
-  scale_fill_continuous(
-    name = "Number of Breweries",
-    low = "white", high = "orange") +
-  theme(
-    legend.position="bottom",
-    plot.title = element_text(hjust = 0.5))
+  ggtitle("Breweries Per State") +
+  scale_fill_continuous(name = "Number of Breweries",
+                        low = "white", 
+                        high = "orange") +
+  theme(legend.position="bottom",
+        plot.title = element_text(hjust = 0.5))
 bcs_choro
 
 ```
@@ -130,7 +136,7 @@ The above choropleth map provides a visual look at the number of breweries prese
 
 ```{r number_of_breweries_2, echo=F, results="hide"}
 
-# Bar graph for all 50 states plus DC. Table output and choropleth map favored. An early placeholder visualization hidden in the final html document.
+# Bar graph for all 50 states plus DC. Table output and choropleth map favored. An early placeholder visualization hidden in the final html document. Code saved to reuse for other bar graphs.
 bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Breweries), y = Num_Breweries)) +
   geom_bar(stat = "identity") +
   coord_flip() +
@@ -138,8 +144,7 @@ bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Brewerie
   xlab("State") +
   ylab("Number of Breweries") +
   theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank()
-        )
+        axis.ticks = element_blank())
 
 ```
 
@@ -149,6 +154,7 @@ bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Brewerie
 kable(breweries_count_state,
       col.names = c("State",
                     "Number of Breweries"),
+      row.names = T,
       caption="Number of breweries in each state:",
       table.attr="style='width:30%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
@@ -171,19 +177,19 @@ The breweries and beers in these data sets have a one-to-many relationship; each
 ```{r merge}
 
 # Merge data sets using shared Brewery_ID column.
-merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
+merged_beers_clean <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
 
 # Reorder columns: all beer-related variables, then all brewery-related variables.
-merged_beers_raw <- merged_beers_raw[c("Beer_Name", "Beer_ID", "ABV", 
+merged_beers_clean <- merged_beers_clean[c("Beer_Name", "Beer_ID", "ABV", 
                                "IBU", "Style", "Ounces",
                                "Brewery_Name", "Brewery_ID", "City", "State")]
 
 # Check merged file by printing first and last six observations.
-kable(head(merged_beers_raw, 6), 
+kable(head(merged_beers_clean, 6), 
       caption="First 6 Rows of Merged Data",
       row.names = T) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
-kable(tail(merged_beers_raw, 6), 
+kable(tail(merged_beers_clean, 6), 
       caption="Last 6 Rows of Merged Data",
       row.names = T) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
@@ -199,7 +205,7 @@ The above table of the last six observations displays "NA," or not available, fo
 ```{r num_nas}
 
 # Report the number of NAs in each column.
-num_nas <- colSums(is.na(merged_beers_raw))
+num_nas <- colSums(is.na(merged_beers_clean))
 kable(num_nas, 
       col.names = c("Number of NAs"),
       caption="Number of NAs Per Column",
@@ -208,42 +214,82 @@ kable(num_nas,
 
 ```
 
-Any instances of NA are counted and reported in this table, which shows that only the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. None of the other columns have missing values.
+Any instances of NA are counted and reported in this table, which shows that the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
 
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
 Plot a bar chart to compare.
 
-```{r medians_state}
-#Calculating the median and ignoring NA
-abv_state_median<-aggregate(merged_beers_raw$ABV, list(merged_beers_raw$State), median, na.rm=TRUE)
-ibu_state_median<-aggregate(merged_beers_raw$IBU, list(merged_beers_raw$State), median, na.rm=TRUE)
+```{r medians_abv_1}
 
-names(abv_state_median)<-c("State", "Median ABV")
-names(ibu_state_median)<-c("State", "Median IBU")
+# Calculate the median ABV values for each state, ignoring NAs.
+abv_state_median <- aggregate(merged_beers_clean$ABV, 
+                              list(merged_beers_clean$State), 
+                              median, 
+                              na.rm=TRUE)
+names(abv_state_median)<-c("State", "Median_ABV")
+
+# Plot bar chart of median ABVs.
+abv_median_bars <- abv_state_median %>% ggplot(aes(x = reorder(State, desc(State)), y = Median_ABV)) +
+  geom_bar(stat = "identity") +
+  coord_flip() + 
+  ggtitle("Median ABV Per State") +
+  xlab("State") +
+  ylab("Median ABV") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank())
+abv_median_bars
+
 ```
-### 4.1 ABV Median
-``` {r}
-#Output the results
+
+```{r medians_abv_2}
+
 kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
+
 ```
-### 4.2 IBU Median
-``` {r}
+
+```{r medians_ibu_1}
+
+# Calculate the median IBU values for each state, ignoring NAs.
+ibu_state_median <- aggregate(merged_beers_clean$IBU, 
+                              list(merged_beers_clean$State), 
+                              median, 
+                              na.rm=TRUE)
+names(ibu_state_median)<-c("State", "Median_IBU")
+
+# Plot bar chart of median IBUs.
+ibu_median_bars <- ibu_state_median %>% ggplot(aes(x = reorder(State, desc(State)), y = Median_IBU)) +
+  geom_bar(stat = "identity") +
+  coord_flip() + 
+  ggtitle("Median IBU Per State") +
+  xlab("State") +
+  ylab("Median IBU") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank())
+ibu_median_bars
+
+```
+
+``` {r medians_ibu_2}
+
 kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
+
 ```
+
+South Dakota's single brewery did not provide IBU values for its seven beers. For this reason, South Dakota has no bar in the bar graph above and its median IBU is reported as NA.
 
 ## 5. Which state has the most alcoholic beer by ABV? Most bitter beer by IBU? 
 (Consider bar chart again, with top [5/10] in each category. However, highlight the number 1.)
-```{r "abv-ibu echo=TRUE"}
-abv_max <- max(merged_beers_raw$ABV, na.rm=TRUE)
-ibu_max <- max(merged_beers_raw$IBU, na.rm=TRUE)
+```{r maximums_state}
+abv_max <- max(merged_beers_clean$ABV, na.rm=TRUE)
+ibu_max <- max(merged_beers_clean$IBU, na.rm=TRUE)
 abv_max
 ibu_max
 
 #Convert State from Factor to Character
-merged_beers_raw$State <- as.character(merged_beers_raw$State)
+merged_beers_clean$State <- as.character(merged_beers_clean$State)
 
 #Determine the highest ABV in each State (return by State)
-abv.agg <- aggregate(ABV ~ State, merged_beers_raw, max)
+abv.agg <- aggregate(ABV ~ State, merged_beers_clean, max)
 
 #Now Sort the states by ABV descending
 sorted_abv_agg<-abv.agg %>% arrange(desc(ABV))
@@ -252,7 +298,7 @@ kable( head(first_ten_abv, 10), format="markdown", caption="Top 10 State ABV Val
 
 
 #Determine the highest IBU in each State (return by State)
-ibu.agg <- aggregate(IBU ~ State, merged_beers_raw, max)
+ibu.agg <- aggregate(IBU ~ State, merged_beers_clean, max)
 
 #Now Sort the states by IBU descending
 sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
@@ -269,22 +315,24 @@ abv_beers <- first_ten_abv %>% ggplot(aes(x= reorder(State, desc(ABV)), y = ABV)
   theme(plot.title = element_text(hjust = 0.5), axis.ticks = element_blank()) + 
   theme(axis.text.x = element_text(angle = -90))
 abv_beers
+
 ```
 
 Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
 ## 6. Summary statistics.
-```{r "abv-summary-stats echo=TRUE"}
+
+```{r abv-summary-stats}
 
 # summary() shows five-number summary, mean, and NAs.
-summary(merged_beers_raw$ABV)
-summary(merged_beers_raw$IBU)
+summary(merged_beers_clean$ABV)
+summary(merged_beers_clean$IBU)
 
 # Five-number summary can also be displayed in a boxplot.
-ggplot(merged_beers_raw, aes(x="", y=ABV)) +
+ggplot(merged_beers_clean, aes(x="", y=ABV)) +
   geom_boxplot() +
   ggtitle("Placeholder ABU boxplot")
-ggplot(merged_beers_raw, aes(x="", y=IBU)) +
+ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   geom_boxplot() +
   ggtitle("Placeholder IBU boxplot")
 
@@ -297,18 +345,18 @@ With these two quantifiable variables for each beer, it is natural to wonder whe
 ```{r abv_ibu_relationship, message=F}
 
 # Draw scatter plot using ggplot2.
-abv_ibu_scatter <- merged_beers_raw %>% ggplot(aes(x = ABV, y = IBU)) + 
+abv_ibu_scatter <- merged_beers_clean %>% ggplot(aes(x = ABV, y = IBU)) + 
   geom_point(na.rm = TRUE, alpha = 0.5, col="#F19800") +
   xlab("Alcohol By Volume (ABV)") +
   ylab("International Bitterness Units (IBU)") +
   ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
   theme(plot.title = element_text(hjust = 0.5),
-       axis.ticks = element_blank()
-       ) +
+       axis.ticks = element_blank()) +
 # Include linear regression.
-  geom_smooth(method = "lm", se = TRUE, level = 0.95,
-             aes(color = "CC720C", fill = "#F28E1C")
-             )
+  geom_smooth(method = "lm", 
+              se = TRUE, 
+              level = 0.95,
+              aes(color = "CC720C", fill = "#F28E1C"))
  
 abv_ibu_scatter
 
@@ -319,7 +367,7 @@ Based on the above scatter plot, there appears to be a positive correlation betw
 ``` {r correlation, message=F}
 
 # Use cor() from base stats to calculate Pearson correlation coefficient.
-r <- cor(merged_beers_raw$ABV, merged_beers_raw$IBU, 
+r <- cor(merged_beers_clean$ABV, merged_beers_clean$IBU, 
          use = "pairwise.complete.obs",
          method = "pearson")
 
@@ -341,12 +389,12 @@ Pearson's r quantifies the relationship between two variables on a scale of 0 (n
 
 # Additional Analysis
   
-## Style Analysis
+<!-- ## Style Analysis -->
 
-```{r style_analysis}
+```{r style_analysis, echo=F, results="hide"}
 
 # General counts of beer styles. Obtain top 20 by brewing frequency.
-beers_count_style <- count(merged_beers_raw, "Style")
+beers_count_style <- count(merged_beers_clean, "Style")
 names(beers_count_style)[names(beers_count_style) == "freq"] <- c("Style_Count")
 beers_count_style_sorted <- beers_count_style %>% arrange(desc(Style_Count))
 beers_count_style_sorted_top20freq <- beers_count_style_sorted[1:20, ]
@@ -373,11 +421,11 @@ style_bars
 
 ```
 
-## Brewery Analysis
+<!-- ## Brewery Analysis -->
 
-```{r brewery_analysis}
+```{r brewery_analysis, echo=F, results="hide"}
 # Count instances of Brewery_Name to figure out how many beers each brewery makes.
-beers_in_brewery <- count(merged_beers_raw, "Brewery_Name")
+beers_in_brewery <- count(merged_beers_clean, "Brewery_Name")
 names(beers_in_brewery)[names(beers_in_brewery) == "freq"] <- c("Beer_Count")
 beers_in_brewery <- beers_in_brewery %>% arrange(desc(Beer_Count))
 beers_in_brewery_top20freq <- beers_in_brewery[1:20, ]
@@ -385,12 +433,48 @@ kable(beers_in_brewery_top20freq, format="markdown", caption="The Top 20 Breweri
 
 # merge the raw beers with the beers in brewery count
 # merged_beers_raw <- merge(beers_clean, breweries_clean, by = c("Brewery_ID", "Brewery_ID"), all = TRUE)
-merged_beers_prime_1 <- merge(beers_in_brewery, merged_beers_raw[, 7-10], by = c("Brewery_Name"), all = FALSE)
+merged_beers_prime_1 <- merge(beers_in_brewery, merged_beers_clean[, 7-10], by = c("Brewery_Name"), all = FALSE)
 merged_beers_prime_2 <- merged_beers_prime_1 %>% arrange(desc(Beer_Count))
 kable(merged_beers_prime_2, format="markdown")
 
 # #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
+
+## Further Per State Analysis
+
+```{r per_state}
+
+# Similarly to counting the number of breweries in each state, count the number of beers made in each state.
+beers_count_state <- count(merged_beers_clean, "State")
+names(beers_count_state)[names(beers_count_state) == "freq"] <- c("Num_Beers")
+
+# Count the number of styles per state.
+styles_count_state <- aggregate(Style ~ State, 
+                               merged_beers_clean, 
+                               function(x) length(unique(x)))
+names(styles_count_state)[names(styles_count_state) == "Style"] <- c("Unique_Styles")
+
+# Output the top ten lists for breweries, beers, and styles for a side-by-side comparison.
+breweries_count_state <- breweries_count_state %>% arrange(desc(Num_Breweries))
+beers_count_state <- beers_count_state %>% arrange(desc(Num_Beers))
+styles_count_state <- styles_count_state %>% arrange(desc(Unique_Styles))
+breweries_beers_styles_count_state <- data.frame(breweries_count_state, beers_count_state, styles_count_state)
+kable(breweries_beers_styles_count_state, 
+      row.names = T,
+      col.names = c("State", "Number of Breweries", 
+                    "State", "Number of Beers",
+                    "State", "Number of Styles"),
+      caption = "Beers and breweries, per state:",
+      table.attr = "style='width:90%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+Although the number of unique beers and unique beer styles correlates with the number of breweries per state, the top ten states in these categories are not necessarily the same or in the same order, as shown by this table. For example, Illinois, ranked 12th for number of breweries, ranks 8th for number of beers, trading places with Washington state, ranked 8th for number of breweries and 12th for number of beers. New York, ranked 13th for breweries and 11th for number of beers, ranks 7th for unique styles.
+
+This is a distinction worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
+
+
 
 # Conclusion
 
