@@ -474,11 +474,28 @@ Although the number of unique beers and unique beer styles correlates with the n
 
 This is a distinction worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
 
+```{r minimums_state}
 
+# Lowest ABV and IBU per state.
+abv_min_state <- aggregate(ABV ~ State, merged_beers_clean, min)
+ibu_min_state <- aggregate(IBU ~ State, merged_beers_clean, min)
+
+abv_min_state <- abv_min_state %>% arrange(ABV)
+kable(abv_min_state)
+
+ibu_min_state <- ibu_min_state %>% arrange(IBU)
+kable(ibu_min_state)
+
+```
+
+California and Indiana also appear in the top 10 lists for lowest ABV and IBU, California ranking first for both. Carrying beers without strong alcohol or bitterness can appeal to customers who are not looking to get drunk or dislike bitter tastes.
 
 # Conclusion
 
 "Summarize your findings from this exercise."
+
+* For these beers, ABV and IBU correlate.
+* 3 states have good beer and style selection. Their ABV/IBU medians fall near the national average, indicating that they have wide varieties of beers that can appeal to different types of consumers.
 
 # Storyline
 ## Notes
