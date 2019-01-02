@@ -58,6 +58,8 @@ BLAHBLAHBLAH FORMAL INTRODUCTION HERE
 * Breweries.csv: A table of 558 US breweries that make those beers
 BLAHBLAHBLAH MENTION THAT THE CLIENT GAVE 7 QUESTIONS, SO THESE ARE EXPLICITLY GIVEN IN THE FILE TO MAKE ANSWERS EASIER FOR THEM TO FIND
 
+To assist our client in finding answers to the questions outlined in the client's initial request, the seven questions are explicitly stated with their answers below.
+
 # Data Input & Cleansing
 
 First, the Beers.csv and Breweries.csv files are loaded into RMarkdown as data frames. Working copies of these data frames, beers_clean and breweries_clean, are created for workflow purposes. Aside from some instances of missing attributes, the data already looks tidy. Certain variables in each data frame are renamed in preparation for merging at a future step.
@@ -184,7 +186,7 @@ The first and last six observations are printed to show that the merge was succe
 
 The above table of the last six observations displays "NA," or not available, for the IBU variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
-```{r numnas}
+```{r num_nas}
 
 # Report the number of NAs in each column.
 num_nas <- colSums(is.na(merged_beers_raw))
@@ -259,7 +261,7 @@ abv_beers <- first_ten_abv %>% ggplot(aes(x= reorder(State, desc(ABV)), y = ABV)
 abv_beers
 ```
 
-## 6. Summary statistics for ABV (and IBU).
+## 6. Summary statistics.
 ```{r "abv-summary-stats echo=TRUE"}
 
 # summary() shows five-number summary, mean, and NAs.
@@ -276,27 +278,33 @@ ggplot(merged_beers_raw, aes(x="", y=IBU)) +
 
 ```
 
-## 7. Is there a relationship between IBU and ABV? 
-Draw a scatterplot. (Use linear regression to quantify the relationship, provide R^2.)
-```{r "IBU-to-ABV echo=TRUE"}
-abv_ibu_scatter <-
- merged_beers_raw %>% ggplot(aes(x = ABV, y = IBU)) +
- geom_point(na.rm = TRUE, alpha = 0.5, col="#F19800") +
- xlab("Alcohol By Volume (ABV)") +
- ylab("International Bitterness Units (IBU)") +
- ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
- # Test with both method="lm" and ="loess" for linear and smooth regressions.
- geom_smooth(method = "lm", se = TRUE, level = 0.95,
-             aes(color = "CC720C", fill = "#F28E1C")
-             ) +
- theme(plot.title = element_text(hjust = 0.5),
-       axis.ticks = element_blank()
-       )
-abv_ibu_scatter
-```
-Results - There appears to be a positive correlation between ABV and IBU.  The higher the alcoholic content (ABV) the higher the bitterness (IBU).  
+## 7. Is there a relationship between ABV and IBU? 
 
-``` {r correlation}
+With these two quantifiable variables for each beer, it is natural to wonder whether a relationship exists between them. A scatter plot is a useful visualization for this purpose.
+
+```{r abv_ibu_relationship, message=F}
+
+# Draw scatter plot using ggplot2.
+abv_ibu_scatter <- merged_beers_raw %>% ggplot(aes(x = ABV, y = IBU)) + 
+  geom_point(na.rm = TRUE, alpha = 0.5, col="#F19800") +
+  xlab("Alcohol By Volume (ABV)") +
+  ylab("International Bitterness Units (IBU)") +
+  ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
+  theme(plot.title = element_text(hjust = 0.5),
+       axis.ticks = element_blank()
+       ) +
+# Include linear regression.
+  geom_smooth(method = "lm", se = TRUE, level = 0.95,
+             aes(color = "CC720C", fill = "#F28E1C")
+             )
+ 
+abv_ibu_scatter
+
+```
+
+Based on the above scatter plot, there appears to be a positive correlation between ABV and IBU in this data. Generally speaking, as alcohol by volume increases, the bitterness in International Bitterness Units also tends to increase. The red best-fit line rising to the right upward diagonal represents this relationship. Note that any beer with at least one of its ABV or IBU values missing is not plotted.
+
+``` {r correlation, message=F}
 
 # Use cor() from base stats to calculate Pearson correlation coefficient.
 r <- cor(merged_beers_raw$ABV, merged_beers_raw$IBU, 
@@ -306,11 +314,18 @@ r <- cor(merged_beers_raw$ABV, merged_beers_raw$IBU,
 # Square Pearson's r to obtain coefficient of determination.
 R_2 <- r^2
 
-# Present r and R_2.
-r
-R_2
+# Display r and R_2.
+r_df <- data.frame("Variable" = c("Pearson Correlation Coefficient (r)", 
+                                  "Coefficient of Determination (R^2)"),
+                   "Value" = c(r, R_2))
+kable(r_df,
+      row.names=F,
+      caption="Quantified Correlation") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
+
+Pearson's r quantifies the relationship between two variables on a scale of 0 (no linear association) to 1 (perfectly linear association). With r = 0.67, ABV and IBU in this data set have a moderate linear association.
 
 # Additional Analysis
   
