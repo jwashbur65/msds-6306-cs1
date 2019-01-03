@@ -485,7 +485,9 @@ MA | 0.099 | 7 (=) | 130 | 3
 MN | 0.099 | 7 (=) | 120 | 5
 TX | 0.099 | 7 (=) | 118 | 7
 
-Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. 
+Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These four states are natural candidates for The Meta Scientist's location.
+
+Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers than the second highest state (265 compared to California's 183) and more 28% more styles (60 compared to Indiana's 47), Colorado should also remain in consideration.
 
 State | ABV Rank | IBU Rank | Breweries Rank | Beer Rank | Style Rank
 :-----|----------|----------|----------------|-----------|-----------
@@ -495,7 +497,6 @@ IN | 3 | 8 (=) | 9 | 4 | 2
 MA | 7 (=) | 3 | 7 | 10 | 9
 TX | 7 (=) | 7 | 5 | 5 | 5
 
-
 ```{r minimums_state}
 
 # Lowest ABV and IBU per state.
@@ -504,13 +505,9 @@ ibu_min_state <- aggregate(IBU ~ State, merged_beers_clean, min)
 ibu_min_state <- rbind(ibu_min_state, c("SD", NA))
 ibu_min_state$IBU <- as.numeric(ibu_min_state$IBU)
 
+# Output for minimums of ABV and IBU in side-by-side comparison.
 abv_min_state <- abv_min_state %>% arrange(ABV)
 ibu_min_state <- ibu_min_state %>% arrange(IBU)
-
-kable(sorted_abv_agg)
-kable(sorted_ibu_agg)
-
-# Output for minimums of ABV and IBU in side-by-side comparison.
 minimums_state <- data.frame(abv_min_state, ibu_min_state)
 kable(minimums_state,
       row.names = T,
