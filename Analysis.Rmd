@@ -216,9 +216,11 @@ kable(num_nas,
 
 Any instances of NA are counted and reported in this table, which shows that the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
 
+
+
 ## 4. Compute median alcohol content and international bitterness unit for each state. 
 Plot a bar chart to compare.
-
+The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
 ```{r medians_abv_1}
 
 # Calculate the median ABV values for each state, ignoring NAs.
@@ -229,18 +231,18 @@ abv_state_median <- aggregate(merged_beers_clean$ABV,
 names(abv_state_median)<-c("State", "Median_ABV")
 
 # Plot bar chart of median ABVs.
-abv_median_bars <- abv_state_median %>% ggplot(aes(x = reorder(State, desc(State)), y = Median_ABV)) +
-  geom_bar(stat = "identity") +
-  coord_flip() + 
-  ggtitle("Median ABV Per State") +
-  xlab("State") +
-  ylab("Median ABV") +
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank())
-abv_median_bars
+abv_state_median$pgroup<-as.numeric(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5)
+
+ggplot(abv_state_median, aes(x=abv_state_median$State, y=abv_state_median$Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
+#geom_text( aes( label = paste0( State ), y = abv_state_median@Median_ABV ),
+      #           vjust = 1.4, size = 3, color = "white" )  
+coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
+ theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank()) +
+        facet_wrap(~ abv_state_median$pgroup)
 
 ```
-
+The output is a new dataframe called abv_state_median that contains the median ABV value for each state. 
 ```{r medians_abv_2}
 
 kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
@@ -257,23 +259,21 @@ ibu_state_median <- aggregate(merged_beers_clean$IBU,
 names(ibu_state_median)<-c("State", "Median_IBU")
 
 # Plot bar chart of median IBUs.
-ibu_median_bars <- ibu_state_median %>% ggplot(aes(x = reorder(State, desc(State)), y = Median_IBU)) +
-  geom_bar(stat = "identity") +
-  coord_flip() + 
-  ggtitle("Median IBU Per State") +
-  xlab("State") +
-  ylab("Median IBU") +
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank())
-ibu_median_bars
+
+ggplot(ibu_state_median, aes(x=ibu_state_median$State, y=ibu_state_median$Median_IBU, fill=Median_IBU)) + geom_bar(stat="identity") +
+coord_flip() + ggtitle("IBU Median by State") + xlab("State") + ylab("IBU Median") +
+ theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank())   
 
 ```
-
+The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.
 ``` {r medians_ibu_2}
 
 kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
 
 ```
+ 
+
 
 South Dakota's single brewery did not provide IBU values for its seven beers. For this reason, South Dakota has no bar in the bar graph above and its median IBU is reported as NA.
 
