@@ -321,6 +321,7 @@ abv_beers
 Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
 ## 6. Summary statistics.
+The summary statistics for ABV provide the min, max, median, mean, 1st and 3rd quartiles for the ABV value.  The NA's are not part of the calculation
 
 ```{r abv-summary-stats}
 
@@ -337,6 +338,7 @@ ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   ggtitle("Placeholder IBU boxplot")
 
 ```
+It's hard to see how the ABV are distributed; so looking at the boxplot, you can see that it's
 
 ## 7. Is there a relationship between ABV and IBU? 
 
