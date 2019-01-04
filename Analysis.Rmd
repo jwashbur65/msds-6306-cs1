@@ -491,7 +491,7 @@ styles_count_state <- aggregate(Style ~ State,
                                function(x) length(unique(x)))
 names(styles_count_state)[names(styles_count_state) == "Style"] <- c("Unique_Styles")
 
-# Output the top ten lists for breweries, beers, and styles for a side-by-side comparison.
+# Output the lists for breweries, beers, and styles for a side-by-side comparison.
 breweries_count_state <- breweries_count_state %>% arrange(desc(Num_Breweries))
 beers_count_state <- beers_count_state %>% arrange(desc(Num_Beers))
 styles_count_state <- styles_count_state %>% arrange(desc(Unique_Styles))
@@ -509,19 +509,50 @@ kable(breweries_beers_styles_count_state,
 
 Although the number of unique beers and unique beer styles correlates with the number of breweries per state, the top ten states in these categories are not necessarily the same or in the same order, as shown by this table. For example, Illinois, ranked 12th for number of breweries, ranks 8th for number of beers, trading places with Washington state, ranked 8th for number of breweries and 12th for number of beers. New York, ranked 13th for breweries and 11th for number of beers, ranks 7th for unique styles.
 
-This is a distinction worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
+The distinction between breweries and beers is worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at just the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
+
+CCAC requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and IBU content are likely popular among current consumers. With one exception, the following states are notable for being within or tied (indicated in the tables below by "=") in the top ten for both:
+
+State | Max ABV | ABV Rank | Max IBU | IBU Rank
+:-----|---------|----------|---------|---------
+CA | 0.099 | 5 | 115 | 8 (=)
+CO | 0.128 | 1 | 104 | 15
+IN | 0.120 | 3 | 115 | 8 (=)
+MA | 0.099 | 7 (=) | 130 | 3
+MN | 0.099 | 7 (=) | 120 | 5
+TX | 0.099 | 7 (=) | 118 | 7
+
+Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These four states are natural candidates for The Meta Scientist's location.
+
+Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers than the second highest state (265 compared to California's 183) and more 28% more styles (60 compared to Indiana's 47), Colorado should also remain in consideration.
+
+State | ABV Rank | IBU Rank | Breweries Rank | Beer Rank | Style Rank
+:-----|----------|----------|----------------|-----------|-----------
+CA | 5 | 8 (=) | 2 | 2 | 3
+CO | 1 | 15 | 1 | 1 | 1
+IN | 3 | 8 (=) | 9 | 4 | 2
+MA | 7 (=) | 3 | 7 | 10 | 9
+TX | 7 (=) | 7 | 5 | 5 | 5
 
 ```{r minimums_state}
 
 # Lowest ABV and IBU per state.
 abv_min_state <- aggregate(ABV ~ State, merged_beers_clean, min)
 ibu_min_state <- aggregate(IBU ~ State, merged_beers_clean, min)
+ibu_min_state <- rbind(ibu_min_state, c("SD", NA))
+ibu_min_state$IBU <- as.numeric(ibu_min_state$IBU)
 
+# Output for minimums of ABV and IBU in side-by-side comparison.
 abv_min_state <- abv_min_state %>% arrange(ABV)
-kable(abv_min_state)
-
 ibu_min_state <- ibu_min_state %>% arrange(IBU)
-kable(ibu_min_state)
+minimums_state <- data.frame(abv_min_state, ibu_min_state)
+kable(minimums_state,
+      row.names = T,
+      col.names = c("State", "Minimum ABV", 
+                    "State", "Minimum IBU"),
+      caption = "Minimum ABVs and IBUs per state:",
+      table.attr = "style='width:90%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
