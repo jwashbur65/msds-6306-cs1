@@ -506,7 +506,7 @@ TX | 7 (=) | 7 | 5 | 5 | 5
 
 Table: Top Candidate General Rankings
 
-
+These five states: California, Colorado, Indiana, Massachusetts, and Texas, are our primary candidates for the new home of The Meta Scientist.
 
 ## ABV and IBU Minima
 
@@ -554,6 +554,42 @@ Beers without strong alcohol or bitterness may appeal to certain segments. In fa
 Ultimately, beers with low ABV and IBU would be nice to have for variety, but CCAC prioritizes high ABV and IBU values more.
 
 ## State ABV/IBU Summaries
+
+We have analyzed the highest and lowest ABV and IBU values for the states, as well as given ABV summary statistics in an earlier question. To narrow the choices further, we consider both the ABV and IBU summary statistics for each of the states under consideration.
+
+```{r summary_boxplots, message=F}
+
+# Subset to 5 states: CA, CO, IN, MA, TX.
+merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "IN", "MA", "TX"))
+merged_beers_candidates$State <- factor(merged_beers_candidates$State)
+
+# Boxplot for ABV distributions of candidates.
+abv_summary_box <- merged_beers_candidates %>% 
+  ggplot(aes(x = State, y = ABV, fill = State)) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean,
+               geom = "point",
+               shape = 23,
+               size = 1) +
+  ggtitle("ABV Distributions Per State") +
+  xlab("State") +
+  ylab("Alcohol By Volume (ABV)")
+abv_summary_box
+
+# Boxplot for IBU distributions of canddiates.
+ibu_summary_box <- merged_beers_candidates %>% 
+  ggplot(aes(x = State, y = IBU, fill = State)) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean,
+               geom = "point",
+               shape = 23,
+               size = 1) +
+  ggtitle("IBU Distributions Per State") +
+  xlab("State") +
+  ylab("International Bitterness Units (IBU)")
+ibu_summary_box
+
+```
 
 
 
