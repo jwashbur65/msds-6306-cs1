@@ -388,7 +388,9 @@ kable(r_df,
 Pearson's r quantifies the relationship between two variables on a scale of 0 (no linear association) to 1 (perfectly linear association). With r = 0.67, ABV and IBU in this data set have a moderate linear association.
 
 # Additional Analysis
-  
+
+The above questions are a useful launching point to answer the client's problem: which state should The Meta Scientist be located in? Because beer diversity is such a high selling point for CCAC's brand, we investigate further into the choices available on a per state basis.
+
 <!-- ## Style Analysis -->
 
 ```{r style_analysis, echo=F, results="hide"}
@@ -440,7 +442,9 @@ kable(merged_beers_prime_2, format="markdown")
 # #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
 
-## Further Per State Analysis
+## Beer & Style Analysis
+
+One of the questions the client asked was how many breweries from each state are interested in submitting beers. A logical step from there is how many beers and how many styles of those beers are being made available by those breweries.
 
 ```{r per_state}
 
@@ -474,7 +478,7 @@ Although the number of unique beers and unique beer styles correlates with the n
 
 The distinction between breweries and beers is worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at just the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
 
-CCAC requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and IBU content are likely popular among current consumers. With one exception, the following states are notable for being within or tied (indicated in the tables below by "=") in the top ten for both:
+CCAC also requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and/or IBU content are likely popular among current consumers. With one exception, the following states are notable for producing a beer within the top ten (or tied for a spot, indicated in the tables below by "=") for both:
 
 State | Max ABV | ABV Rank | Max IBU | IBU Rank
 :-----|---------|----------|---------|---------
@@ -484,10 +488,13 @@ IN | 0.120 | 3 | 115 | 8 (=)
 MA | 0.099 | 7 (=) | 130 | 3
 MN | 0.099 | 7 (=) | 120 | 5
 TX | 0.099 | 7 (=) | 118 | 7
+Median | 0.090 | NA | 90 | NA
+
+Table: Top Candidates' Maximum ABV and IBU Values and Ranks
 
 Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These four states are natural candidates for The Meta Scientist's location.
 
-Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers than the second highest state (265 compared to California's 183) and more 28% more styles (60 compared to Indiana's 47), Colorado should also remain in consideration.
+Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers (265 beers compared to California's 183) and 28% more styles (60 styles compared to Indiana's 47) than the second-highest state in each category, along with the most alcoholic beer (Boulder-based Upslope Brewing Company's 19.2 oz Belgian Style Quadrupel [*sic*] Ale, with an ABU of 0.128), Colorado should also remain in consideration. 
 
 State | ABV Rank | IBU Rank | Breweries Rank | Beer Rank | Style Rank
 :-----|----------|----------|----------------|-----------|-----------
@@ -497,11 +504,21 @@ IN | 3 | 8 (=) | 9 | 4 | 2
 MA | 7 (=) | 3 | 7 | 10 | 9
 TX | 7 (=) | 7 | 5 | 5 | 5
 
+Table: Top Candidate General Rankings
+
+
+
+## ABV and IBU Minima
+
+Another question the client asked was which states had the most alcoholic and most bitter beers. To consider the full spectrum, we investigate the opposite question: which states have the least alcoholic and least bitter beers?
+
 ```{r minimums_state}
 
 # Lowest ABV and IBU per state.
 abv_min_state <- aggregate(ABV ~ State, merged_beers_clean, min)
 ibu_min_state <- aggregate(IBU ~ State, merged_beers_clean, min)
+abv_min_median <- median(abv_min_state$ABV)
+ibu_min_median <- median(ibu_min_state$IBU)
 ibu_min_state <- rbind(ibu_min_state, c("SD", NA))
 ibu_min_state$IBU <- as.numeric(ibu_min_state$IBU)
 
@@ -519,7 +536,26 @@ kable(minimums_state,
 
 ```
 
-California and Indiana also appear in the top 10 lists for lowest ABV and IBU, California ranking first for both. Carrying beers without strong alcohol or bitterness can appeal to customers who are not looking to get drunk or dislike bitter tastes.
+State | Min ABV | ABV Rank | Min IBU | IBU Rank
+:-----|---------|----------|---------|---------
+CA | 0.001 | 1 | 4 | 1
+CO | 0.041 | 30 | 9 | 17
+IN | 0.040 | 18 (=) | 8 | 12 (=)
+MA | 0.035 | 8 (=) | 7 | 8 (=)
+TX | 0.040 | 18 (=) | 5 | 2 (=)
+Median | 0.040 | NA | 10 | NA
+
+Table: Top Candidates' Minimum ABV and IBU Values and Ranks
+
+Of the candidates obtained from looking at the highest ABV/IBU and breweries/beers/styles lists, only California and Massachusetts also fall within the top ten for the lowest ABV and IBU. California ranks number one for both of these; its Scotty K NA has the lowest ABV at 0.001 (assuming this value is reported correctly, as the next lowest value is 0.027) and its Summer Solstice series has the lowest IBU at 4.
+
+Beers without strong alcohol or bitterness may appeal to certain segments. In fact, one CCAC survey shows that some customers prefer beers high in alcoholic content but low in bitter flavor. As shown by the earlier correlation study, ABV and IBU typically trend together, so beers of this nature are rather uncommon (North Carolina's Devils Tramping Ground Tripel in the ABV/IBU scatter plot's lower right corner, with ABV = 0.092 and IBU = 5, is a standout exception). However, those same customers indicated bitterness is not a dealbreaker if the hops bring out other flavors.
+
+Ultimately, beers with low ABV and IBU would be nice to have for variety, but CCAC prioritizes high ABV and IBU values more.
+
+## State ABV/IBU Summaries
+
+
 
 # Conclusion
 
