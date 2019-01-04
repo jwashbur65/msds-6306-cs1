@@ -222,27 +222,43 @@ Any instances of NA are counted and reported in this table, which shows that the
 Plot a bar chart to compare.
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
 ```{r medians_abv_1}
-
+library(data.table)
 # Calculate the median ABV values for each state, ignoring NAs.
 abv_state_median <- aggregate(merged_beers_clean$ABV, 
                               list(merged_beers_clean$State), 
                               median, 
                               na.rm=TRUE)
 names(abv_state_median)<-c("State", "Median_ABV")
-
+sorted_abv_state_median<-abv_state_median[order(-abv_state_median$Median_ABV),]
+sorted_abv_state_median$pgroup<-0
 # Plot bar chart of median ABVs.
-abv_state_median$pgroup<-as.numeric(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5)
 
-ggplot(abv_state_median, aes(x=abv_state_median$State, y=abv_state_median$Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
-#geom_text( aes( label = paste0( State ), y = abv_state_median@Median_ABV ),
-      #           vjust = 1.4, size = 3, color = "white" )  
-coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
- theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank()) +
-        facet_wrap(~ abv_state_median$pgroup)
+maxrow<-nrow(sorted_abv_state_median)
+
+for (row in 1:maxrow) { 
+  if (row < 6)  sorted_abv_state_median[row, "pgroup"]<-1 
+     else if (row < 11) sorted_abv_state_median[row, "pgroup"]<-2 
+            else if (row < 16) sorted_abv_state_median[row, "pgroup"]<-3
+                else if (row < 21) sorted_abv_state_median[row, "pgroup"]<-4
+                      else if (row < 26) sorted_abv_state_median[row, "pgroup"]<-5
+                          else if (row < 31) sorted_abv_state_median[row, "pgroup"]<-6
+                              else if (row < 36) sorted_abv_state_median[row, "pgroup"]<-7
+                                 else if (row < 41) sorted_abv_state_median[row, "pgroup"]<-8
+                                       else if (row < 46) sorted_abv_state_median[row, "pgroup"]<-9
+                                           else  sorted_abv_state_median[row, "pgroup"]<-10
+}
+
+p1 <- ggplot(sorted_abv_state_median, aes(x=State, y=Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
+ facet_wrap(~ pgroup, scales="free" ) +
+geom_text( aes( label = paste0( State ), y = sorted_abv_state_median$Median_ABV ), vjust = 1.4, size = 3, color = "white" ) +
+#coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
+theme(panel.grid.minor =   element_blank(),
+        panel.grid.major =  element_blank() )  # element_line(colour = "white",size=0.75))
+
+p1
 
 ```
-The output is a new dataframe called abv_state_median that contains the median ABV value for each state. 
+The output is a dataframe called abv_state_median that contains the median ABV value for each state.  The data is sorted and plotted using ggplot. 
 ```{r medians_abv_2}
 
 kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
@@ -257,16 +273,37 @@ ibu_state_median <- aggregate(merged_beers_clean$IBU,
                               median, 
                               na.rm=TRUE)
 names(ibu_state_median)<-c("State", "Median_IBU")
-
+sorted_ibu_state_median<-ibu_state_median[order(-ibu_state_median$Median_IBU),]
+sorted_ibu_state_median$pgroup<-0
 # Plot bar chart of median IBUs.
 
-ggplot(ibu_state_median, aes(x=ibu_state_median$State, y=ibu_state_median$Median_IBU, fill=Median_IBU)) + geom_bar(stat="identity") +
+maxrow<-nrow(sorted_ibu_state_median)
+
+for (row in 1:maxrow) { 
+  if (row < 6)  sorted_ibu_state_median[row, "pgroup"]<-1 
+     else if (row < 11) sorted_ibu_state_median[row, "pgroup"]<-2 
+            else if (row < 16) sorted_ibu_state_median[row, "pgroup"]<-3
+                else if (row < 21) sorted_ibu_state_median[row, "pgroup"]<-4
+                      else if (row < 26) sorted_ibu_state_median[row, "pgroup"]<-5
+                          else if (row < 31) sorted_ibu_state_median[row, "pgroup"]<-6
+                              else if (row < 36) sorted_ibu_state_median[row, "pgroup"]<-7
+                                 else if (row < 41) sorted_ibu_state_median[row, "pgroup"]<-8
+                                       else if (row < 46) sorted_ibu_state_median[row, "pgroup"]<-9
+                                           else  sorted_ibu_state_median[row, "pgroup"]<-10
+}
+
+p2 <- ggplot(sorted_ibu_state_median, aes(x=State, y=Median_IBU, fill=Median_IBU)) + geom_bar(stat="identity") +
+ facet_wrap(~ pgroup, scales="free" ) +
+      geom_text( aes( label = paste0( State ), y = sorted_ibu_state_median$Median_IBU ), vjust = 1.4, size = 3, color =  "white" ) +
 coord_flip() + ggtitle("IBU Median by State") + xlab("State") + ylab("IBU Median") +
- theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank())   
+theme(panel.grid.minor =   element_blank(),
+        panel.grid.major =  element_blank() )  # element_line(colour = "white",size=0.75))
+
+p2
+   
 
 ```
-The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.
+The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot
 ``` {r medians_ibu_2}
 
 kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
@@ -321,7 +358,6 @@ abv_beers
 Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
 ## 6. Summary statistics.
-The summary statistics for ABV provide the min, max, median, mean, 1st and 3rd quartiles for the ABV value.  The NA's are not part of the calculation
 
 ```{r abv-summary-stats}
 
@@ -338,7 +374,6 @@ ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   ggtitle("Placeholder IBU boxplot")
 
 ```
-It's hard to see how the ABV are distributed; so looking at the boxplot, you can see that it's
 
 ## 7. Is there a relationship between ABV and IBU? 
 
