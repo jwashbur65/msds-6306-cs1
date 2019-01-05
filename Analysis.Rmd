@@ -322,6 +322,8 @@ Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bit
 
 ## 6. Summary statistics.
 
+The summary statistics for the ABV value show the Min, Max, Median, Mean, 1st Quartile and 3rd Quartile.  
+
 ```{r abv-summary-stats}
 
 # summary() shows five-number summary, mean, and NAs.
@@ -337,6 +339,8 @@ ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   ggtitle("Placeholder IBU boxplot")
 
 ```
+
+Using simply the summary statistics gives some insight into the data.  Taking the summary statistics and looking at from a box plot perspective shows quite a few outliers on the high end and show some right skewedness.  50% of the ABV values are between .05 and .067 with a mean value of .05977 
 
 ## 7. Is there a relationship between ABV and IBU? 
 
