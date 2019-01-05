@@ -17,7 +17,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 # Install packages if not already installed. Adapted from https://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them.
-list_of_packages <- c("dplyr", "ggplot2", "kableExtra", "knitr", "plyr", "psych", "usmap")
+list_of_packages <- c("data.table", "dplyr", "ggplot2", "kableExtra", "knitr", "plyr", "psych", "usmap")
 # new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
 # if(length(new_packages)) install.packages(new_packages)
 
@@ -218,7 +218,7 @@ Any instances of NA are counted and reported in this table, which shows that the
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State. The NA values are ignored. The same process is used to calculate the median IBU by state.
 
 ```{r medians_abv_1}
-library(data.table)
+
 # Calculate the median ABV values for each state, ignoring NAs.
 abv_state_median <- aggregate(merged_beers_clean$ABV, 
                               list(merged_beers_clean$State), 
@@ -251,7 +251,7 @@ for (row in 1:maxrow) {
                                            else  sorted_abv_state_median[row, "pgroup"]<-10
 }
 
-p1 <- ggplot(sorted_abv_state_median, aes(x=State, y=Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
+abv_median_bars <- ggplot(sorted_abv_state_median, aes(x=State, y=Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
  facet_wrap(~ pgroup, scales="free" ) +
 #geom_text( aes( label = paste0( State ), y = sorted_abv_state_median$Median_ABV ), vjust = 1.4, size = 3, color = "white" ) +
 coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
@@ -262,7 +262,7 @@ theme(panel.grid.minor = element_blank(),
       axis.ticks.y = element_blank(),
       axis.text.x = element_text(size=6, angle=90))
 
-p1
+abv_median_bars
 
 ```
 
@@ -302,7 +302,7 @@ for (row in 1:maxrow) {
                                            else  sorted_ibu_state_median[row, "pgroup"]<-10
 }
 
-p2 <- ggplot(sorted_ibu_state_median, aes(x=State, y=Median_IBU, fill=Median_IBU)) + geom_bar(stat="identity") +
+ibu_median_bars <- ggplot(sorted_ibu_state_median, aes(x=State, y=Median_IBU, fill=Median_IBU)) + geom_bar(stat="identity") +
  facet_wrap(~ pgroup, scales="free" ) +
  #     geom_text( aes( label = paste0( State ), y = sorted_ibu_state_median$Median_IBU ), vjust = 1.4, size = 3, color =  "white" ) +
 coord_flip() + ggtitle("IBU Median by State") + xlab("State") + ylab("IBU Median") +
@@ -312,7 +312,7 @@ theme(panel.grid.minor = element_blank(),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank() )  
 
-p2
+ibu_median_bars
    
 ```
 
@@ -326,31 +326,32 @@ South Dakota's single brewery did not provide IBU values for its seven beers. Fo
 
 #The most alchoholic beer by ABV
 abv_sorted_beers <- merged_beers_clean %>%  arrange(desc(ABV)) %>%  select(State, ABV)
-head(abv_sorted_beers,1)
+kable(head(abv_sorted_beers,1),
+      row.names = T,
+      table.attr="style='width:20%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 #The most bitter beer by IBU
 ibu_sorted_beers <- merged_beers_clean %>%  arrange(desc(IBU)) %>%  select(State, IBU)
-head(ibu_sorted_beers,1)
+kable(head(ibu_sorted_beers,1),
+      row.names = T,
+      table.attr="style='width:20%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
 ```{r reference_code, echo=FALSE, results="hide"}
+
 #Convert State from Factor to Character
 merged_beers_clean$State <- as.character(merged_beers_clean$State)
 
 #Determine the highest ABV in each State (return by State)
-abv.agg <- aggregate(ABV ~ State, merged_beers_clean, max)
-
-#Now Sort the states by ABV descending
-sorted_abv_agg<-abv.agg %>% arrange(desc(ABV))
-first_ten_abv<-head(sorted_abv_agg, 10)
-
+abv_max_state <- aggregate(ABV ~ State, merged_beers_clean, max)
+abv_max_state <- abv_max_state %>% arrange(desc(ABV))
 
 #Determine the highest IBU in each State (return by State)
-ibu.agg <- aggregate(IBU ~ State, merged_beers_clean, max)
-
-#Now Sort the states by IBU descending
-sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
+ibu_max_state <- aggregate(IBU ~ State, merged_beers_clean, max)
+ibu_max_state <- ibu_max_state %>% arrange(desc(IBU))
 
 ```
 
@@ -367,7 +368,7 @@ summary(merged_beers_clean$ABV)
 summary(merged_beers_clean$IBU)
 
 # Five-number summary can also be displayed in a boxplot.
-merged_beers_clean %>% 
+abv_overall_box <- merged_beers_clean %>% 
   filter(!is.na(ABV)) %>%
   ggplot(aes(x="", y=ABV)) +
   geom_boxplot() +
@@ -378,7 +379,7 @@ merged_beers_clean %>%
         axis.ticks.x=element_blank(),
         axis.ticks.y=element_blank())
 
-merged_beers_clean %>%
+ibu_overall_box <- merged_beers_clean %>%
   filter(!is.na(IBU)) %>%
   ggplot(aes(x="", y=IBU)) +
   geom_boxplot() +
@@ -388,6 +389,9 @@ merged_beers_clean %>%
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.ticks.y=element_blank())
+
+abv_overall_box
+ibu_overall_box
 
 ```
 
@@ -624,7 +628,7 @@ merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "
 merged_beers_candidates$State <- factor(merged_beers_candidates$State)
 
 # Boxplot for ABV distributions of candidates.
-abv_summary_box <- merged_beers_candidates %>% 
+abv_candidate_box <- merged_beers_candidates %>% 
   filter(!is.na(ABV)) %>%
   ggplot(aes(x = State, y = ABV, fill = State)) +
   geom_boxplot() +
@@ -639,7 +643,7 @@ abv_summary_box <- merged_beers_candidates %>%
   theme(plot.title = element_text(hjust = 0.5),
         axis.ticks.x = element_blank(),
         axis.ticks.y = element_blank())
-abv_summary_box
+abv_candidate_box
 
 ```
 
@@ -671,7 +675,7 @@ As shown in the side-by-side boxplots, California, Colorado, Indiana, Michigan, 
 ```{r ibu_summary_1, fig.align="center"}
 
 # Boxplot for IBU distributions of canddiates.
-ibu_summary_box <- merged_beers_candidates %>%
+ibu_candidate_box <- merged_beers_candidates %>%
   filter(!is.na(IBU)) %>%
   ggplot(aes(x = State, y = IBU, fill = State)) +
   geom_boxplot() +
@@ -686,7 +690,7 @@ ibu_summary_box <- merged_beers_candidates %>%
   theme(plot.title = element_text(hjust = 0.5),
         axis.ticks.x = element_blank(),
         axis.ticks.y = element_blank())
-ibu_summary_box
+ibu_candidate_box
 
 ```
 

@@ -9,34 +9,35 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Beers.csv
-***
-
-Provided by the client, this dataset contains observations on 2410 US craft beers with the following variables:
-
-* Name: Beer name.
-* Beer_ID: A unique numerical identifier for the beer.
-* ABV: Alcohol by volume.
-* IBU: International Bitterness Units.
-* Brewery_ID: ID of brewery associated with the beer.
-* Style: The beer style.
-* Ounces: Default amount each beer is sold as.
+# Main Objects
 
 ## Breweries.csv
 ***
 
-Provided by the client, this dataset contains observations on 558 US breweries with the following variables:
+Provided by the client, this data set contains observations on 558 US breweries that submitted potential beers for the new bar. Initially loaded as the breweries_raw data frame. The working copy is breweries_clean.
 
 * Brew_ID: A unique numerical identifier for the brewery.
 * Name: The brewery's name.
-* City: The brewery's home city.
-* State: The brewery's home state.
+* City: The brewery's home city. Factor of 384 levels.
+* State: Abbreviation of the brewery's home state. Factor of 51 levels: the 50 US states and Washington DC.
 
-## Merged.csv
+## Beers.csv
 ***
 
-The merged version of the Beers.csv and Breweries.csv files, created by [the MergeData.R] file. The [Brewery_ID/Brew_ID] variable was used to merge them.
+Provided by the client, this data set contains observations on the 2,410 US craft beers the breweries offered. Initially loaded as the beers_raw data frame. The working copy is beers_clean.
 
+* Name: Beer name.
+* Beer_ID: A unique numerical identifier for the beer.
+* ABV: Standardized measure of alcohol by volume. 
+* IBU: International Bitterness Units.
+* Brewery_ID: ID of brewery associated with the beer.
+* Style: The beer style. Factor of 99 levels.
+* Ounces: Default amount each beer is sold as.
+
+## Merged_Beers.csv
+***
+
+The merged version of the Beers.csv and Breweries.csv files, created and outputted by the merge R chunk in the Analysis.Rmd file. The Brewery_ID (from Beers.csv) and Brew_ID (from Breweries.csv) variables, which both represent a unique numerical identifier for each brewery, were used to merge the files into the merged_beers_clean data frame. 
 
 ## Variable Summary
 ***
@@ -54,3 +55,43 @@ Brew_ID         | Breweries | int            | Brewery_ID    | int
 Name            | Breweries | factor         | Brewery_Name  | chr
 City            | Breweries | factor         | City          | factor
 State           | Breweries | factor         | State         | factor
+
+# Analysis Objects
+
+Most analysis is performed on one of beers_clean, breweries_clean, or merged_beers_clean, or an object derived from these data sets. Aside from counts or calculations, no new variables are created. While the majority of the objects are created to answer the questions of interest, a few are used for further analysis (such as the VAR_max_state and VAR_min_state series) necessary to make the state recommendation for the client's overall problem. 
+
+Object Name   | Description
+:-------------|-------------------------------------------------------------------
+breweries_count_state | Counts breweries per state
+num_nas | Counts NAs in each variable
+abv_state_median | Calculates median ABVs per state
+ibu_state_median | Calculates median IBUs per state
+abv_sorted_beers | Sorted version of merged_beers_clean used to find highest ABV
+ibu_sorted_beers | Sorted version of merged_beers_clean used to find highest IBU
+abv_max_state | Shows highest ABV for each state
+ibu_max_state | Shows highest IBU for each state
+r | Pearson correlation coefficient of ABV and IBU
+R_2 | Coefficient of determination of ABV and IBU
+beers_count_state | Counts beers per state
+styles_count_state | Counts styles per state
+breweries_beers_styles_count_state | Frame for VAR_count_state lists
+abv_min_state | Shows lowest ABV for each state
+ibu_min_state | Shows lowest IBU for each state
+minimums_state | Frame for VAR_min_state lists
+merged_beers_candidates | Subsetted version of merged_beers_clean with 6 candidate states
+
+Table: Listing of non-visualization objects
+
+Figure Name   | Description
+:-------------|------------------------------------------------------------------
+bcs_bars | Bar graph of breweries per state (unused)
+bcs_choro | Choropleth map representing higher brewery count with darker shading
+abv_median_bars | Bar graph of ABV medians per state, separated for readability
+ibu_median_bars | Bar graph of IBU medians per state, separated for readability
+abv_overall_box | Box plot of all 51 states' ABV 
+ibu_overall_box | Box plot of all 51 states' IBU 
+abv_ibu_scatter | Scatter plot of IBU vs ABV with linear regression
+abv_candidate_box | Individual box plots of 6 candidate states' ABV distributions
+ibu_candidate_box | Individual box plots of 6 candidate states' IBU distributions
+
+Table: Listing of visualizations
