@@ -13,13 +13,13 @@ output:
 
 ---
 
-```{r setup, include=F, message=F}
+```{r setup, include=F, message=F, results="hide", warning=F}
 knitr::opts_chunk$set(echo = TRUE)
 
 # Install packages if not already installed. Adapted from https://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them.
 list_of_packages <- c("dplyr", "ggplot2", "kableExtra", "knitr", "plyr", "psych", "usmap")
-new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
-if(length(new_packages)) install.packages(new_packages)
+# new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
+# if(length(new_packages)) install.packages(new_packages)
 
 # Load multiple packages at once.
 lapply(list_of_packages, library, character.only=TRUE)
