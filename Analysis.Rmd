@@ -484,12 +484,12 @@ breweries_count_state <- breweries_count_state %>% arrange(desc(Num_Breweries))
 beers_count_state <- beers_count_state %>% arrange(desc(Num_Beers))
 styles_count_state <- styles_count_state %>% arrange(desc(Unique_Styles))
 breweries_beers_styles_count_state <- data.frame(breweries_count_state, beers_count_state, styles_count_state)
-kable(breweries_beers_styles_count_state, 
+kable(head(breweries_beers_styles_count_state,20), 
       row.names = T,
       col.names = c("State", "Number of Breweries", 
                     "State", "Number of Beers",
                     "State", "Number of Styles"),
-      caption = "Beers and breweries, per state:",
+      caption = "Top 20 Beers and breweries, per state:",
       table.attr = "style='width:90%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
@@ -547,11 +547,11 @@ ibu_min_state$IBU <- as.numeric(ibu_min_state$IBU)
 abv_min_state <- abv_min_state %>% arrange(ABV)
 ibu_min_state <- ibu_min_state %>% arrange(IBU)
 minimums_state <- data.frame(abv_min_state, ibu_min_state)
-kable(minimums_state,
+kable(head(minimums_state,20),
       row.names = T,
       col.names = c("State", "Minimum ABV", 
                     "State", "Minimum IBU"),
-      caption = "Minimum ABVs and IBUs per state:",
+      caption = "Top 20 Minimum ABVs and IBUs per state:",
       table.attr = "style='width:90%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
