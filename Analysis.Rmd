@@ -247,7 +247,6 @@ p1
 
 ```
 
-
 The output is a dataframe called abv_state_median that contains the median ABV value for each state.  The data is sorted and plotted using ggplot. 
 
 
