@@ -4,6 +4,7 @@ author: "Lavonnia Newman, Joseph Caguioa, Jeff Washburn"
 date: "1/7/2019"
 output: 
   html_document:
+    css: custom_html.css
     theme: default
     highlight: tango
     toc: true
@@ -320,7 +321,7 @@ The output is a new dataframe called ibu_state_median that contains the median I
 
 South Dakota's single brewery did not provide IBU values for its seven beers. For this reason, South Dakota has no bar in the bar graph above and its median IBU is reported as NA.
 
-## 5. Which state has the most alcoholic beer by ABV? Most bitter beer by IBU? 
+## 5. By state, most alcoholic beer by ABV? Most bitter beer by IBU? 
 
 ```{r maximums_state}
 
@@ -528,7 +529,7 @@ kable(head(breweries_beers_styles_count_state,20),
                     "State", "Number of Beers",
                     "State", "Number of Styles"),
       caption = "Top 20 Beers and breweries, per state:",
-      table.attr = "style='width:90%;'") %>%
+      table.attr = "style='width:75%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
@@ -592,7 +593,7 @@ kable(head(minimums_state,20),
       col.names = c("State", "Minimum ABV", 
                     "State", "Minimum IBU"),
       caption = "Top 20 Minimum ABVs and IBUs per state:",
-      table.attr = "style='width:90%;'") %>%
+      table.attr = "style='width:50%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```

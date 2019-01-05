@@ -1,13 +1,50 @@
 /* CSS file to edit HTML output for Rmd file. */
 
 h1 {
-	font-family: "Helvetica", sans-serif;
+	font-family: "Helvetica Neue", serif;
 	font-weight: bold;
-	color: #f28e1c;
+	color: #212F70;
+	text-decoration: underline;
+	margin-top: 40px;
+	margin-bottom: 20px;
 }
 
 h2 {
-	font-family: "Helvetica", sans-serif;
+	font-family: "Garamond", sans-serif;
+	font-size: 1.75em;
 	font-weight: bold;
-	color: #f28e1c;
+	color: #2058C5;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+caption {
+  font-family: "Arial", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #3A4CA5;
+  text-align: center;
+  text-decoration: underline;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+p {
+  font-family: "Verdana", sans-serif;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: square;
+  font-family: "Verdana", sans-serif;
+  font-size: 12px;
+}
+
+table {
+  font-family: "Verdana", sans-serif;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
