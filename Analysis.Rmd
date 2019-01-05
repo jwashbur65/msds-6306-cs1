@@ -31,15 +31,6 @@ lapply(list_of_packages, library, character.only=TRUE)
 # Consider integrating into custom_html.css if time allows.
 # Test to see whether this is desired for all instances of kable. Note that activating these deactivates the HTML table of contents for some reason.
 ```
-<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css">
-<script src="http://code.jquery.com/jquery-2.1.2.min.js"></script>
-<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
-
-<script type="text/javascript">
-         $(document).ready(function() {
-             $("table").DataTable();
-         } );
-</script>
 
 # Introduction
 
