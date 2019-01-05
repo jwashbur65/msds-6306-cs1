@@ -219,15 +219,10 @@ abv_state_median <- aggregate(merged_beers_clean$ABV,
                               median, 
                               na.rm=TRUE)
 names(abv_state_median)<-c("State", "Median_ABV")
-
-#Output the Kable of the Median ABV by State
-kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
-
 sorted_abv_state_median <- abv_state_median %>%  arrange(desc(Median_ABV)) %>%  select(State, Median_ABV)
 sorted_abv_state_median$pgroup<-0
 # Plot bar chart of median ABVs.
 
-#create the facets for the graph to make the data more readable.
 maxrow<-nrow(sorted_abv_state_median)
 
 for (row in 1:maxrow) { 
@@ -267,10 +262,6 @@ ibu_state_median <- aggregate(merged_beers_clean$IBU,
                               median, 
                               na.rm=TRUE)
 names(ibu_state_median)<-c("State", "Median_IBU")
-
-#Output the Kable of the computed IBU Median by State
-kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
-
 sorted_ibu_state_median <- ibu_state_median %>%  arrange(desc(Median_IBU)) %>%  select(State, Median_IBU)
 sorted_ibu_state_median$pgroup<-0
 # Plot bar chart of median IBUs.
@@ -696,3 +687,11 @@ Cheun Chugs & Cheers has several good choices in state for its new bar, The Meta
 * California, the state with the second most breweries (39), also has the second highest number of unique beers (183), the third highest number of unique styles (46), and the least alcoholic and least bitter beers. Because it has in-state offerings at both the low and high ends of the spectrum for ABV and IBU values, California boasts both beer variety and alcohol and bitterness range.
 * Indiana and Texas are good fallback options in the Midwest and South. 
 * Massachusetts is another option to extend the East Coast brand, offering a wide variety of notably less alcoholic and less bitter beers.
+
+Cities with the most breweries available in them, so they are recommended cities to open bar in state
+CA: San Diego (8)
+CO: Denver (8)
+IN: Indianapolis (4)
+MA: Boston (2)
+MI: Grand Rapids (3)
+TX: Austin (8)
