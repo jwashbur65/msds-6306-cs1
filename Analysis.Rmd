@@ -31,15 +31,6 @@ lapply(list_of_packages, library, character.only=TRUE)
 # Consider integrating into custom_html.css if time allows.
 # Test to see whether this is desired for all instances of kable. Note that activating these deactivates the HTML table of contents for some reason.
 ```
-<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css">
-<script src="http://code.jquery.com/jquery-2.1.2.min.js"></script>
-<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
-
-<script type="text/javascript">
-         $(document).ready(function() {
-             $("table").DataTable();
-         } );
-</script>
 
 # Introduction
 
@@ -151,6 +142,7 @@ bcs_bars <- breweries_count_state %>% ggplot(aes(x = reorder(state, Num_Brewerie
 ``` {r number_of_breweries_3}
 
 # Kable output for breweries in each state.
+breweries_count_state <- breweries_count_state %>% arrange(desc(Num_Breweries))
 kable(breweries_count_state,
       col.names = c("State",
                     "Number of Breweries"),
@@ -161,9 +153,7 @@ kable(breweries_count_state,
 
 ```
 
-HOLD: NOTE THAT THE TABLE CANNOT BE SORTED IF THE JQUERY/DATATABLE COMMANDS ARE INACTIVE. THOSE CONFLICT WITH THE TOC FOR SOME REASON. (REWRITE THE PORTION OF THE FOLLOWING ANSWER THAT REFERENCES IT.)
-
-This table provides the exact numbers. Its default setting has it sorted in descending alphabetical order by state abbreviation, but it can also be sorted by the number of breweries. The table can be queried for any particular state, but the following details are notable:
+This table provides the exact numbers for all 51 states. The following details are notable:
 
 * Colorado has the most breweries, 47. It is the only state in this data set containing more than 40 breweries.
 * California (39), Michigan (32), Oregon (29), Texas (28), Pennsylvania (25), Massachusetts (23), Washington state (23), Indiana (22), and Wisconsin (20) round out the rest of the top ten.
