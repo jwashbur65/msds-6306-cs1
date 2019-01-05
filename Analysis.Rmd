@@ -160,7 +160,7 @@ This table provides the exact numbers for all 51 states. The following details a
 * Each state has at least one brewery in the data set.
 * North Dakota, South Dakota, Washington DC, and Wyoming are tied for the least breweries, with one apiece.
 
-## 2. Merge beer data with breweries data
+## 2. Merge beer data with breweries data.
 
 The breweries and beers in these data sets have a one-to-many relationship; each brewery can produce multiple beers, but each beer is only linked to a single brewery. Both data sets share brewery ID as a common variable, so it can be used to merge the breweries data set into the beers data set for further analysis.
 
@@ -174,21 +174,28 @@ merged_beers_clean <- merged_beers_clean[c("Beer_Name", "Beer_ID", "ABV",
                                "IBU", "Style", "Ounces",
                                "Brewery_Name", "Brewery_ID", "City", "State")]
 
+# Output a merged data file.
+write.csv(merged_beers_clean, 'Analysis/Merged_Beers.csv')
+
 # Check merged file by printing first and last six observations.
 kable(head(merged_beers_clean, 6), 
       caption="First 6 Rows of Merged Data",
-      row.names = T) %>%
+      row.names = T,
+      col.names = c("Beer Name", "Beer ID", "ABV", "IBU", "Style", "Ounces",
+                    "Brewery Name", "Brewery ID", "City", "State")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 kable(tail(merged_beers_clean, 6), 
       caption="Last 6 Rows of Merged Data",
-      row.names = T) %>%
+      row.names = T,
+      col.names = c("Beer Name", "Beer ID", "ABV", "IBU", "Style", "Ounces",
+                    "Brewery Name", "Brewery ID", "City", "State")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
 The first and last six observations of the merged data frame are printed to show that the merge was successful. Note that because the brewery ID was used as the merging column, the new data frame is sorted in ascending order by that variable. Brewery_ID = 1 appears for the first six rows, while Brewery_ID = 558 appears in the final row of the last six, 558 being the number of breweries in the original Breweries.csv file. Furthermore, the row numbers for the last six observations indicate that all 2,410 craft beers from the original Beers.csv file made it into this merged data frame.
 
-## 3. Report number of NAs in each column
+## 3. Report number of NAs in each column.
 
 The above table of the last six observations displays "NA," or not available, for the International Bitterness Unit (IBU) variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
@@ -198,7 +205,7 @@ The above table of the last six observations displays "NA," or not available, fo
 num_nas <- colSums(is.na(merged_beers_clean))
 kable(num_nas, 
       col.names = c("Number of NAs"),
-      caption="Number of NAs Per Column",
+      caption="Number of Missing Values Per Column",
       table.attr="style='width:30%;'") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
@@ -206,9 +213,10 @@ kable(num_nas,
 
 Any instances of NA are counted and reported in this table, which shows that the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
 
-## 4. Compute median ABV and IBU and plot bar chart for each state
+## 4. Compute median ABV and IBU and plot bar chart for each state.
 
-The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
+The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State. The NA values are ignored. The same process is used to calculate the median IBU by state.
+
 ```{r medians_abv_1}
 library(data.table)
 # Calculate the median ABV values for each state, ignoring NAs.
@@ -243,16 +251,18 @@ p1 <- ggplot(sorted_abv_state_median, aes(x=State, y=Median_ABV, fill=Median_ABV
  facet_wrap(~ pgroup, scales="free" ) +
 #geom_text( aes( label = paste0( State ), y = sorted_abv_state_median$Median_ABV ), vjust = 1.4, size = 3, color = "white" ) +
 coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
-theme(panel.grid.minor =   element_blank(),
-        panel.grid.major =  element_blank() )  # element_line(colour = "white",size=0.75))
+theme(panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(), # element_line(colour = "white",size=0.75))
+      plot.title = element_text(hjust = 0.5),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_text(size=6, angle=90))
 
 p1
 
 ```
 
-The output is a dataframe called abv_state_median that contains the median ABV value for each state.  The data is sorted and plotted using ggplot. 
-
-
+The output is a dataframe called abv_state_median that contains the median ABV value for each state. The data is sorted and plotted using ggplot.
 
 ```{r medians_ibu_1}
 
@@ -288,19 +298,17 @@ p2 <- ggplot(sorted_ibu_state_median, aes(x=State, y=Median_IBU, fill=Median_IBU
  facet_wrap(~ pgroup, scales="free" ) +
  #     geom_text( aes( label = paste0( State ), y = sorted_ibu_state_median$Median_IBU ), vjust = 1.4, size = 3, color =  "white" ) +
 coord_flip() + ggtitle("IBU Median by State") + xlab("State") + ylab("IBU Median") +
-theme(panel.grid.minor =   element_blank(),
-        panel.grid.major =  element_blank() )  # element_line(colour = "white",size=0.75))
+theme(panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(), # element_line(colour = "white",size=0.75))
+      plot.title = element_text(hjust = 0.5),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank() )  
 
 p2
    
-
 ```
 
-The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot  
-
-
- 
-
+The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot.
 
 South Dakota's single brewery did not provide IBU values for its seven beers. For this reason, South Dakota has no bar in the bar graph above and its median IBU is reported as NA.
 
@@ -340,7 +348,7 @@ sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
 
 Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
-## 6. ABV summary statistics
+## 6. Show summary statistics for ABV.
 
 The summary statistics for the ABV value show the Min, Max, Median, Mean, 1st Quartile and 3rd Quartile.  
 
@@ -351,12 +359,25 @@ summary(merged_beers_clean$ABV)
 summary(merged_beers_clean$IBU)
 
 # Five-number summary can also be displayed in a boxplot.
-ggplot(merged_beers_clean, aes(x="", y=ABV)) +
+merged_beers_clean %>% 
+  filter(!is.na(ABV)) %>%
+  ggplot(aes(x="", y=ABV)) +
   geom_boxplot() +
-  ggtitle("ABV boxplot")
-ggplot(merged_beers_clean, aes(x="", y=IBU)) +
+  ggtitle("ABV Boxplot") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank())
+
+merged_beers_clean %>%
+  filter(!is.na(IBU)) %>%
+  ggplot(aes(x="", y=IBU)) +
   geom_boxplot() +
-  ggtitle("IBU boxplot")
+  ggtitle("IBU Boxplot") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank())
 
 ```
 
@@ -501,7 +522,7 @@ Although the number of unique beers and unique beer styles correlates with the n
 
 The distinction between breweries and beers is worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at just the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
 
-CCAC also requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and/or IBU content are likely popular among current consumers. With one exception, the following states are notable for producing a beer within the top ten (or tied for a spot, indicated in the tables below by "=") for both:
+CCAC also requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and/or IBU content are popular among current consumers. With one exception, the following states are notable for producing a beer within the top ten (or tied for a spot, indicated in the tables below by "=") for both:
 
 State | Max ABV | ABV Rank | Max IBU | IBU Rank
 :-----|---------|----------|---------|---------
@@ -509,31 +530,33 @@ CA | 0.099 | 5 | 115 | 8 (=)
 CO | 0.128 | 1 | 104 | 15
 IN | 0.120 | 3 | 115 | 8 (=)
 MA | 0.099 | 7 (=) | 130 | 3
+MI | 0.099 | 7 (=) | 115 | 8 (=)
 MN | 0.099 | 7 (=) | 120 | 5
 TX | 0.099 | 7 (=) | 118 | 7
 Median | 0.090 | NA | 90 | NA
 
 Table: Top Candidates' Maximum ABV and IBU Values and Ranks
 
-Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These four states are natural candidates for The Meta Scientist's location.
+Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, Michigan, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These five states are natural candidates for The Meta Scientist's location.
 
-Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers (265 beers compared to California's 183) and 28% more styles (60 styles compared to Indiana's 47) than the second-highest state in each category, along with the most alcoholic beer (Boulder-based Upslope Brewing Company's 19.2 oz Belgian Style Quadrupel [*sic*] Ale, with an ABU of 0.128), Colorado should also remain in consideration. 
+Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers (265 beers compared to California's 183) and 28% more styles (60 styles compared to Indiana's 47) than the second-highest state in each category, along with the most alcoholic beer (Boulder-based Upslope Brewing Company's 19.2 oz Belgian Style Quadrupel [*sic*] Ale, with an ABU of 0.128), Colorado should also remain in consideration.
 
-State | ABV Rank | IBU Rank | Breweries Rank | Beer Rank | Style Rank
-:-----|----------|----------|----------------|-----------|-----------
+State | Max ABV Rank | Max IBU Rank | Breweries Rank | Beer Rank | Style Rank
+:-----|--------------|--------------|----------------|-----------|-----------
 CA | 5 | 8 (=) | 2 | 2 | 3
 CO | 1 | 15 | 1 | 1 | 1
 IN | 3 | 8 (=) | 9 | 4 | 2
 MA | 7 (=) | 3 | 7 | 10 | 9
+MI | 7 (=) | 8 (=) | 3 | 3 | 4
 TX | 7 (=) | 7 | 5 | 5 | 5
 
 Table: Top Candidate General Rankings
 
-These five states: California, Colorado, Indiana, Massachusetts, and Texas, are our primary candidates for the new home of The Meta Scientist.
+These six states: California, Colorado, Indiana, Massachusetts, Michigan, and Texas, are our primary candidates for the new home of The Meta Scientist.
 
 ## ABV and IBU Minima
 
-Another question the client asked was which states had the most alcoholic and most bitter beers. To consider the full spectrum, we investigate the opposite question: which states have the least alcoholic and least bitter beers?
+Another question the client asked was which states had the most alcoholic and most bitter beers. To consider the full spectrum, we also investigate the opposite question: which states have the least alcoholic and least bitter beers?
 
 ```{r minimums_state}
 
@@ -559,12 +582,15 @@ kable(head(minimums_state,20),
 
 ```
 
+The top twenty states in each category are shown above, with a focus on our candidates below.
+
 State | Min ABV | ABV Rank | Min IBU | IBU Rank
 :-----|---------|----------|---------|---------
 CA | 0.001 | 1 | 4 | 1
 CO | 0.041 | 30 | 9 | 17
 IN | 0.040 | 18 (=) | 8 | 12 (=)
 MA | 0.035 | 8 (=) | 7 | 8 (=)
+MI | 0.038 | 13 (=) | 6 | 6 (=)
 TX | 0.040 | 18 (=) | 5 | 2 (=)
 Median | 0.040 | NA | 10 | NA
 
@@ -572,18 +598,18 @@ Table: Top Candidates' Minimum ABV and IBU Values and Ranks
 
 Of the candidates obtained from looking at the highest ABV/IBU and breweries/beers/styles lists, only California and Massachusetts also fall within the top ten for the lowest ABV and IBU. California ranks number one for both of these; its Scotty K NA has the lowest ABV at 0.001 (assuming this value is reported correctly, as the next lowest value is 0.027) and its Summer Solstice series has the lowest IBU at 4.
 
-Beers without strong alcohol or bitterness may appeal to certain segments. In fact, one CCAC survey shows that some customers prefer beers high in alcoholic content but low in bitter flavor. As shown by the earlier correlation study, ABV and IBU typically trend together, so beers of this nature are rather uncommon (North Carolina's Devils Tramping Ground Tripel in the ABV/IBU scatter plot's lower right corner, with ABV = 0.092 and IBU = 5, is a standout exception). However, those same customers indicated bitterness is not a dealbreaker if the hops bring out other flavors.
+Beers without strong alcohol or bitterness may appeal to certain segments. In fact, one CCAC survey shows that some customers prefer beers high in alcoholic content but low in bitter flavor. As shown by the earlier correlation study, ABV and IBU typically trend together, so beers of this nature are rather uncommon (North Carolina's Devils Tramping Ground Tripel in the ABV/IBU scatter plot's lower right corner, with ABV = 0.092 and IBU = 5, is a standout exception). However, those same customers generally indicated bitterness is not a dealbreaker if the hops bring out other flavors.
 
 Ultimately, beers with low ABV and IBU may be nice for targeting a specific audience, but CCAC currently prioritizes high ABV and IBU values.
 
 ## State ABV/IBU Summaries
 
-We have analyzed the highest and lowest ABV and IBU values for the states, as well as given ABV summary statistics in an earlier question. To narrow the choices further, we consider both the ABV and IBU summary statistics for each of the states under consideration.
+We have analyzed the highest and lowest ABV and IBU values for the states, as well as given ABV summary statistics in an earlier question. To narrow the choices further, we consider both the ABV and IBU summary statistics (namely the minimum, median, and maximum, plus an additional measure of center in the mean) for each of the states.
 
 ```{r abv_summary_1, message=F}
 
-# Subset to 5 states: CA, CO, IN, MA, TX.
-merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "IN", "MA", "TX"))
+# Subset to 6 candidates: CA, CO, IN, MA, MI, TX.
+merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "IN", "MA", "MI", "TX"))
 merged_beers_candidates$State <- factor(merged_beers_candidates$State)
 
 # Boxplot for ABV distributions of candidates.
@@ -598,7 +624,10 @@ abv_summary_box <- merged_beers_candidates %>%
   ggtitle("ABV Distributions Per State") +
   xlab("State") +
   ylab("Alcohol By Volume (ABV)") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank())
 abv_summary_box
 
 ```
@@ -610,23 +639,23 @@ merged_beers_candidates %>% group_by(State) %>%
   dplyr::summarize(Min = min(ABV),
                    Median = median(ABV),
                    Mean = mean(ABV),
-                   IQRange = IQR(ABV),
                    Max = max(ABV))
 
 ```
 
-State | Minimum | Median | Mean | IQRange | Maximum
-:-----|---------|--------|------|---------|---------
-National | 0.0010 | 0.0560 | 0.0598 | 0.0170 | 0.128
-California | 0.0010 | 0.0580 | 0.0610 | 0.0200 | 0.099
-Colorado | 0.0410 | 0.0605 | 0.0634 | 0.0189 | 0.128
-Indiana | 0.040 | 0.0580 | 0.0634 | 0.0180 | 0.120
-Massachusetts | 0.035 | 0.0540 | 0.0557 | 0.011 | 0.099
-Texas | 0.040 | 0.0550 | 0.0598 | 0.0165 | 0.099
+State | Minimum | Median | Mean | Maximum | Beers (n)
+:-----|---------|--------|------|---------|----------
+National | 0.001 | 0.0560 | 0.0598 | 0.128 | 2348
+California | 0.001 | 0.0580 | 0.0610 | 0.099 | 183
+Colorado | 0.041 | 0.0605 | 0.0634 | 0.128 | 265
+Indiana | 0.040 | 0.0580 | 0.0634 | 0.120 | 139
+Massachusetts | 0.035 | 0.0540 | 0.0557 | 0.099 | 82
+Michigan | 0.038 | 0.0620 | 0.0634 | 0.099 | 162
+Texas | 0.040 | 0.0550 | 0.0598 | 0.099 | 130
 
 Table: ABV Summary Statistics for Candidates
 
-As shown in the side-by-side boxplots, California, Colorado, Indiana, and Texas have relatively similar ABV distributions, aside from some outliers in both directions. Compared to the national ABV averages, using both median and mean as measures of center, California, Colorado, and Indiana produce slightly more alcoholic beers than average.
+As shown in the side-by-side boxplots, California, Colorado, Indiana, Michigan, and Texas have relatively similar ABV distributions, aside from some outliers in both directions. Compared to the national ABV averages, using both median and mean as measures of center, California, Colorado, Indiana, and Michigan produce slightly more alcoholic beers than average.
 
 ```{r ibu_summary_1}
 
@@ -642,7 +671,10 @@ ibu_summary_box <- merged_beers_candidates %>%
   ggtitle("IBU Distributions Per State") +
   xlab("State") +
   ylab("International Bitterness Units (IBU)") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank())
 ibu_summary_box
 
 ```
@@ -654,23 +686,25 @@ merged_beers_candidates %>% group_by(State) %>%
   dplyr::summarize(Min = min(IBU),
                    Median = median(IBU),
                    Mean = mean(IBU),
-                   IQRange = IQR(IBU),
                    Max = max(IBU))
 
 ```
 
-State | Minimum | Median | Mean | IQRange | Maximum
-:-----|---------|--------|------|---------|---------
-National | 4 | 35 | 42.71 | 43 | 138
-California | 4 | 42 | 46.28 | 49 | 115
-Colorado | 9 | 40 | 47.43 | 42.25 | 104
-Indiana | 8 | 33 | 42.99 | 37 | 115
-Massachusetts | 7 | 35 | 38 | 25 | 130
-Texas | 5 | 33 | 40.39 | 29 | 118
+State | Minimum | Median | Mean | Maximum | Beers (n)
+:-----|---------|--------|------|---------|----------
+National | 4 | 35 | 42.71 | 138 | 1405
+California | 4 | 42 | 46.28 | 115 | 183
+Colorado | 9 | 40 | 47.43 | 104 | 265
+Indiana | 8 | 33 | 42.99 | 115 | 139
+Massachusetts | 7 | 35 | 38 | 130 | 82
+Michigan | 6 | 35 | 36.74 | 115 | 162
+Texas | 5 | 33 | 40.39 | 118 | 130
 
 Table: IBU Summary Statistics for Candidates
 
-Compared to the national IBU averages, using both median and mean as measures of center, California and Colorado produce beers more bitter than average. This is not unexpected, because more alcoholic beers tend to also be more bitter. 
+Compared to the national IBU averages, using both median and mean as measures of center, California and Colorado produce beers more bitter than average. This is not unexpected, as more alcoholic beers tend to also be more bitter. 
+
+Overall, the candidate states' beers have similar distributions in ABV and IBU. However, certain outliers indicate beers with unusually high or low ABV or IBU values in some states. Additionally, certain states produce beers more alcoholic or more bitter than the national average.
 
 # Conclusion
 
@@ -679,7 +713,7 @@ In summary, the following statements apply for the original Breweries.csv and Be
 * Some beers lack values for ABV, IBU, and/or Style.
 * ABV and IBU have a moderate positive correlation. As one increases, the other also tends to increase.
 * By state, ABV has a median range of [0.040, 0.0625]. IBU has a median range of [19, 61].
-* The state with the highest ABV is Colorado. The highest IBU belongs to Oregon. The lowest of both comes from California.
+* The state with the highest ABV (0.128) is Colorado. The highest IBU (138) belongs to Oregon. The lowest of both comes from California (0.001, 4).
 
 ## Recommendation
 
