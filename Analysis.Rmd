@@ -221,6 +221,9 @@ sorted_abv_state_median <- abv_state_median %>%  arrange(desc(Median_ABV)) %>%  
 sorted_abv_state_median$pgroup<-0
 # Plot bar chart of median ABVs.
 
+#Output the Kable for the median ABV by State
+kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
+
 maxrow<-nrow(sorted_abv_state_median)
 
 for (row in 1:maxrow) { 
@@ -262,6 +265,9 @@ names(ibu_state_median)<-c("State", "Median_IBU")
 sorted_ibu_state_median <- ibu_state_median %>%  arrange(desc(Median_IBU)) %>%  select(State, Median_IBU)
 sorted_ibu_state_median$pgroup<-0
 # Plot bar chart of median IBUs.
+
+#Output the Kable for the median IBU by State
+kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
 
 maxrow<-nrow(sorted_ibu_state_median)
 
