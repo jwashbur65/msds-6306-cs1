@@ -366,6 +366,8 @@ Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bit
 
 ## 6. Summary statistics.
 
+The summary statistics for the ABV value show the Min, Max, Median, Mean, 1st Quartile and 3rd Quartile.  
+
 ```{r abv-summary-stats}
 
 # summary() shows five-number summary, mean, and NAs.
@@ -375,28 +377,32 @@ summary(merged_beers_clean$IBU)
 # Five-number summary can also be displayed in a boxplot.
 ggplot(merged_beers_clean, aes(x="", y=ABV)) +
   geom_boxplot() +
-  ggtitle("Placeholder ABU boxplot")
+  ggtitle("Placeholder ABV boxplot")
 ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   geom_boxplot() +
   ggtitle("Placeholder IBU boxplot")
 
 ```
 
+Using simply the summary statistics gives some insight into the data.  Taking the summary statistics and looking at from a box plot perspective shows quite a few outliers on the high end and show some right skewedness.  50% of the ABV values are between .05 and .067 with a mean value of .05977 
+
 ## 7. Is there a relationship between ABV and IBU? 
 
 With these two quantifiable variables for each beer, it is natural to wonder whether a relationship exists between them. A scatter plot is a useful visualization for this purpose.
 
-```{r abv_ibu_relationship, message=F}
+```{r abv_ibu_relationship}
 
 # Draw scatter plot using ggplot2.
-abv_ibu_scatter <- merged_beers_clean %>% ggplot(aes(x = ABV, y = IBU)) + 
+abv_ibu_scatter <- merged_beers_clean %>% 
+  filter(!is.na(ABV)) %>% filter(!is.na(IBU)) %>%
+  ggplot(aes(x = ABV, y = IBU)) + 
   geom_point(na.rm = TRUE, alpha = 0.5, col="#F19800") +
   xlab("Alcohol By Volume (ABV)") +
   ylab("International Bitterness Units (IBU)") +
   ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
   theme(plot.title = element_text(hjust = 0.5),
        axis.ticks = element_blank()) +
-# Include linear regression.
+# Include linear regression with 95% pointwise confidence interval.
   geom_smooth(method = "lm", 
               se = TRUE, 
               level = 0.95,
@@ -432,7 +438,9 @@ kable(r_df,
 Pearson's r quantifies the relationship between two variables on a scale of 0 (no linear association) to 1 (perfectly linear association). With r = 0.67, ABV and IBU in this data set have a moderate linear association.
 
 # Additional Analysis
-  
+
+The above questions are a useful launching point to answer the client's problem: which state should The Meta Scientist be located in? Because beer diversity is such a high selling point for CCAC's brand, we investigate further into the choices available on a per state basis.
+
 <!-- ## Style Analysis -->
 
 ```{r style_analysis, echo=F, results="hide"}
@@ -459,9 +467,7 @@ style_bars <- beers_count_style_sorted_top20freq %>% ggplot(aes(x = reorder(Styl
   xlab("Style") +
   ylab("Beers Per Style") +
   theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank()
-        )
-style_bars
+        axis.ticks = element_blank())
 
 ```
 
@@ -481,10 +487,11 @@ merged_beers_prime_1 <- merge(beers_in_brewery, merged_beers_clean[, 7-10], by =
 merged_beers_prime_2 <- merged_beers_prime_1 %>% arrange(desc(Beer_Count))
 kable(merged_beers_prime_2, format="markdown")
 
-# #Create a dataframe with just the Name and FT percentagerawfreeThrows<- data.frame(myspurs[2:nrow(myspurs),c(1,10)])
 ```
 
-## Further Per State Analysis
+## Beer & Style Analysis
+
+One of the questions the client asked was how many breweries from each state are interested in submitting beers. A logical step from there is how many beers and how many styles of those beers are being made available by those breweries.
 
 ```{r per_state}
 
@@ -518,7 +525,7 @@ Although the number of unique beers and unique beer styles correlates with the n
 
 The distinction between breweries and beers is worth considering because the numbers of available beers and styles, CCAC's main draw, can be directly quantified instead of looking at just the breweries alone. Current breweries may offer additional beers of different styles in the future, or new breweries may establish themselves in certain states, but neither of these are guaranteed.
 
-CCAC requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and IBU content are likely popular among current consumers. With one exception, the following states are notable for being within or tied (indicated in the tables below by "=") in the top ten for both:
+CCAC also requested information on the states with the most alcoholic and most bitter beers available, indicating that beers high in ABV and/or IBU content are likely popular among current consumers. With one exception, the following states are notable for producing a beer within the top ten (or tied for a spot, indicated in the tables below by "=") for both:
 
 State | Max ABV | ABV Rank | Max IBU | IBU Rank
 :-----|---------|----------|---------|---------
@@ -528,10 +535,13 @@ IN | 0.120 | 3 | 115 | 8 (=)
 MA | 0.099 | 7 (=) | 130 | 3
 MN | 0.099 | 7 (=) | 120 | 5
 TX | 0.099 | 7 (=) | 118 | 7
+Median | 0.090 | NA | 90 | NA
+
+Table: Top Candidates' Maximum ABV and IBU Values and Ranks
 
 Of the states that are in both top ten lists for ABV and IBU, California, Indiana, Massachusetts, and Texas also appear in the top ten for the number of breweries, beers, and styles per state. These four states are natural candidates for The Meta Scientist's location.
 
-Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers than the second highest state (265 compared to California's 183) and more 28% more styles (60 compared to Indiana's 47), Colorado should also remain in consideration.
+Although Colorado lands outside the top ten for maximum IBU, it places first in the other four rankings, as shown below. Considering that CCAC highly values beer variety, the fact that Colorado's breweries offer 45% more beers (265 beers compared to California's 183) and 28% more styles (60 styles compared to Indiana's 47) than the second-highest state in each category, along with the most alcoholic beer (Boulder-based Upslope Brewing Company's 19.2 oz Belgian Style Quadrupel [*sic*] Ale, with an ABU of 0.128), Colorado should also remain in consideration. 
 
 State | ABV Rank | IBU Rank | Breweries Rank | Beer Rank | Style Rank
 :-----|----------|----------|----------------|-----------|-----------
@@ -541,11 +551,21 @@ IN | 3 | 8 (=) | 9 | 4 | 2
 MA | 7 (=) | 3 | 7 | 10 | 9
 TX | 7 (=) | 7 | 5 | 5 | 5
 
+Table: Top Candidate General Rankings
+
+These five states: California, Colorado, Indiana, Massachusetts, and Texas, are our primary candidates for the new home of The Meta Scientist.
+
+## ABV and IBU Minima
+
+Another question the client asked was which states had the most alcoholic and most bitter beers. To consider the full spectrum, we investigate the opposite question: which states have the least alcoholic and least bitter beers?
+
 ```{r minimums_state}
 
 # Lowest ABV and IBU per state.
 abv_min_state <- aggregate(ABV ~ State, merged_beers_clean, min)
 ibu_min_state <- aggregate(IBU ~ State, merged_beers_clean, min)
+abv_min_median <- median(abv_min_state$ABV)
+ibu_min_median <- median(ibu_min_state$IBU)
 ibu_min_state <- rbind(ibu_min_state, c("SD", NA))
 ibu_min_state$IBU <- as.numeric(ibu_min_state$IBU)
 
@@ -563,74 +583,133 @@ kable(minimums_state,
 
 ```
 
-California and Indiana also appear in the top 10 lists for lowest ABV and IBU, California ranking first for both. Carrying beers without strong alcohol or bitterness can appeal to customers who are not looking to get drunk or dislike bitter tastes.
+State | Min ABV | ABV Rank | Min IBU | IBU Rank
+:-----|---------|----------|---------|---------
+CA | 0.001 | 1 | 4 | 1
+CO | 0.041 | 30 | 9 | 17
+IN | 0.040 | 18 (=) | 8 | 12 (=)
+MA | 0.035 | 8 (=) | 7 | 8 (=)
+TX | 0.040 | 18 (=) | 5 | 2 (=)
+Median | 0.040 | NA | 10 | NA
+
+Table: Top Candidates' Minimum ABV and IBU Values and Ranks
+
+Of the candidates obtained from looking at the highest ABV/IBU and breweries/beers/styles lists, only California and Massachusetts also fall within the top ten for the lowest ABV and IBU. California ranks number one for both of these; its Scotty K NA has the lowest ABV at 0.001 (assuming this value is reported correctly, as the next lowest value is 0.027) and its Summer Solstice series has the lowest IBU at 4.
+
+Beers without strong alcohol or bitterness may appeal to certain segments. In fact, one CCAC survey shows that some customers prefer beers high in alcoholic content but low in bitter flavor. As shown by the earlier correlation study, ABV and IBU typically trend together, so beers of this nature are rather uncommon (North Carolina's Devils Tramping Ground Tripel in the ABV/IBU scatter plot's lower right corner, with ABV = 0.092 and IBU = 5, is a standout exception). However, those same customers indicated bitterness is not a dealbreaker if the hops bring out other flavors.
+
+Ultimately, beers with low ABV and IBU may be nice for targeting a specific audience, but CCAC currently prioritizes high ABV and IBU values.
+
+## State ABV/IBU Summaries
+
+We have analyzed the highest and lowest ABV and IBU values for the states, as well as given ABV summary statistics in an earlier question. To narrow the choices further, we consider both the ABV and IBU summary statistics for each of the states under consideration.
+
+```{r abv_summary_1, message=F}
+
+# Subset to 5 states: CA, CO, IN, MA, TX.
+merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "IN", "MA", "TX"))
+merged_beers_candidates$State <- factor(merged_beers_candidates$State)
+
+# Boxplot for ABV distributions of candidates.
+abv_summary_box <- merged_beers_candidates %>% 
+  filter(!is.na(ABV)) %>%
+  ggplot(aes(x = State, y = ABV, fill = State)) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean,
+               geom = "point",
+               shape = 23,
+               size = 1) +
+  ggtitle("ABV Distributions Per State") +
+  xlab("State") +
+  ylab("Alcohol By Volume (ABV)") +
+  theme(plot.title = element_text(hjust = 0.5))
+abv_summary_box
+
+```
+
+```{r abv_summary_2, message=F, echo=F, results="hide"}
+
+merged_beers_candidates %>% group_by(State) %>%
+  filter(!is.na(ABV)) %>%
+  dplyr::summarize(Min = min(ABV),
+                   Median = median(ABV),
+                   Mean = mean(ABV),
+                   IQRange = IQR(ABV),
+                   Max = max(ABV))
+
+```
+
+State | Minimum | Median | Mean | IQRange | Maximum
+:-----|---------|--------|------|---------|---------
+National | 0.0010 | 0.0560 | 0.0598 | 0.0170 | 0.128
+California | 0.0010 | 0.0580 | 0.0610 | 0.0200 | 0.099
+Colorado | 0.0410 | 0.0605 | 0.0634 | 0.0189 | 0.128
+Indiana | 0.040 | 0.0580 | 0.0634 | 0.0180 | 0.120
+Massachusetts | 0.035 | 0.0540 | 0.0557 | 0.011 | 0.099
+Texas | 0.040 | 0.0550 | 0.0598 | 0.0165 | 0.099
+
+Table: ABV Summary Statistics for Candidates
+
+As shown in the side-by-side boxplots, California, Colorado, Indiana, and Texas have relatively similar ABV distributions, aside from some outliers in both directions. Compared to the national ABV averages, using both median and mean as measures of center, California, Colorado, and Indiana produce slightly more alcoholic beers than average.
+
+```{r ibu_summary_1}
+
+# Boxplot for IBU distributions of canddiates.
+ibu_summary_box <- merged_beers_candidates %>%
+  filter(!is.na(IBU)) %>%
+  ggplot(aes(x = State, y = IBU, fill = State)) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean,
+               geom = "point",
+               shape = 23,
+               size = 1) +
+  ggtitle("IBU Distributions Per State") +
+  xlab("State") +
+  ylab("International Bitterness Units (IBU)") +
+  theme(plot.title = element_text(hjust = 0.5))
+ibu_summary_box
+
+```
+
+```{r ibu_summary_2, message=F, echo=F, results="hide"}
+
+merged_beers_candidates %>% group_by(State) %>%
+  filter(!is.na(IBU)) %>%
+  dplyr::summarize(Min = min(IBU),
+                   Median = median(IBU),
+                   Mean = mean(IBU),
+                   IQRange = IQR(IBU),
+                   Max = max(IBU))
+
+```
+
+State | Minimum | Median | Mean | IQRange | Maximum
+:-----|---------|--------|------|---------|---------
+National | 4 | 35 | 42.71 | 43 | 138
+California | 4 | 42 | 46.28 | 49 | 115
+Colorado | 9 | 40 | 47.43 | 42.25 | 104
+Indiana | 8 | 33 | 42.99 | 37 | 115
+Massachusetts | 7 | 35 | 38 | 25 | 130
+Texas | 5 | 33 | 40.39 | 29 | 118
+
+Table: IBU Summary Statistics for Candidates
+
+Compared to the national IBU averages, using both median and mean as measures of center, California and Colorado produce beers more bitter than average. This is not unexpected, because more alcoholic beers tend to also be more bitter. 
 
 # Conclusion
 
-"Summarize your findings from this exercise."
+In summary, the following statements apply for the original Breweries.csv and Beers.csv data sets:
 
-* For these beers, ABV and IBU correlate.
-* 3 states have good beer and style selection. Their ABV/IBU medians fall near the national average, indicating that they have wide varieties of beers that can appeal to different types of consumers.
+* Some beers lack values for ABV, IBU, and/or Style.
+* ABV and IBU have a moderate positive correlation. As one increases, the other also tends to increase.
+* By state, ABV has a median range of [0.040, 0.0625]. IBU has a median range of [19, 61].
+* The state with the highest ABV is Colorado. The highest IBU belongs to Oregon. The lowest of both comes from California.
 
-# Storyline
-## Notes
-* Concept
-  + Dr Cheun is an established bar owner, looking to open a new bar(s) across the U.S.  We are an analysist firm helping Dr. Cheun open bars.  
-  + She is looking for:
-    + Open a new bar, that has easy access to most breweries for the type of beers to target certain customers
-    + Types of beer (look at "The Top 20 Beer Styles by Frequency" chart below)
-    + Bar location (Dr. Cheun is based out of Nevada, we think you should not open up a new bar here)
-    + Range of beer (which beers to have on tap)
-    + Need to map current locations of her existing bars (to reconfirm current selection of beers against consumer base)
-      + We analyzed our beers from ABV and IBU content and matched up the best selection based on your store location.
-      + Beer xzy would do good here vs, beer def will do better in your TX bar because they like to get drunk quick
-    + Demographics of this state is mostly xyz, and found this beer is a good fit for this abc beer
-* Company Name
-  + SM-Brew (new name in the works)
-* Call out that Dr Cheun is the client (gave use the data to be analyzed) and we are the vendor/sales/ folks that took data, cleaned, merged it, made sense of it
-  + 2 data files provided, had to merge them. 
-  + in IBU and ABV, there was x number of these when we merged them by beers across states, there was x number of NAs for number of beers.  
-  + We cleaned some things
-* Content that must be worked into storyline
-  + #1 Breweries per state
-  + #4 Median ABV and IBU per state
-  + #5 State w/ max ABV beer and most bitter 
-  + #6 Summary statistic for ABV
-  + #7 Relationship between ABV and IBU
-* Cast
-  + Dr. Cheun investor 
+## Recommendation
 
-## Intro (2 mins)
-*  Dr Cheun is an established bar owner, looking to open a new vegan bar across the U.S. to cator to the lack of choices vegatarians have when it comes to entertainment and social nightlife.  We are an analysist firm helping Dr. Cheun to choose the best location based on brewery logistics/distribution, alcoholic content/bitterness (use the relationship between bitterness and alcoholic content), and lastly the style of beer 
+Cheun Chugs & Cheers has several good choices in state for its new bar, The Meta Scientist. The company should carefully weigh the pros and cons of each state, along with any outside factors not accounted for in the provided data sets, before making its decision.
 
-*  Our goal is to help you determine the best location and best bang for your buck on opening the new location based on the type of beer currently sold in the area to maximize drunkeness
-* 
-
-### Point 1 (4 mins)
-* best location based on brewery logistics/distribution
-  + Current logistics of brewery locations vs best possible bar opening location (reduce beer distribution cost)
-  + based on Dr Cheun's current beer locations, it makes sense (from brewery location) to open bar in these 4 possible states
-  + Current breakdown of breweries across the state (need table/chart)
-  
-* There are tax incentives to go with breweries that are located in the following 5 states (or, tx, nv, idaho).
-
-* The East coast cost is extremely high and are recommending that the bar remain in the central/west region
-
-### Point 2 (4 mins)
-* alcoholic content/bitterness 
-  + (use the relationship between bitterness and alcoholic content graph)
-  + Based on the comparison of ABV and ounces per beer.  
-  + First we looked the ABV median per state (4.1)
-  + Then we looked the IBU median per state (4.2) determined that 
-  
-* We found that people like a good mix between bitterness and alcholic content.  We also found that the higher the alcolohic content, the more the person would drink
-
-* We recommend a higher content beer
-
-
-### Point 3 (4 mins)
-* style of beer
-  + We researched the styles of beer across the united states (show the table of Top 20 beer styles by frequency)
-
-## Conclusion (2 mins)
-From the information provided, we conclude that you should open a vegan bar in Paris, TX with the following beers offered x, y, z, which you would purchase from breweries (x, y, and z) to reduce your liability of being tied to 1 brewery 
+* Colorado, the state with the most breweries (47), also has the highest number of unique beers (265), the most unique styles (60), and the most alcoholic beer. It is the optimal choice for maximizing beer variety, providing the most alcoholic beer offered by a partner in the US, and providing more alcoholic beer in general.
+* California, the state with the second most breweries (39), also has the second highest number of unique beers (183), the third highest number of unique styles (46), and the least alcoholic and least bitter beers. Because it has in-state offerings at both the low and high ends of the spectrum for ABV and IBU values, California boasts both beer variety and alcohol and bitterness range.
+* Indiana and Texas are good fallback options in the Midwest and South. 
+* Massachusetts is another option to extend the East Coast brand, offering a wide variety of notably less alcoholic and less bitter beers.
