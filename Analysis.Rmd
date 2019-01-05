@@ -229,7 +229,8 @@ abv_state_median <- aggregate(merged_beers_clean$ABV,
                               median, 
                               na.rm=TRUE)
 names(abv_state_median)<-c("State", "Median_ABV")
-sorted_abv_state_median<-abv_state_median[order(-abv_state_median$Median_ABV),]
+sorted_abv_state_median <- abv_state_median %>%  arrange(desc(Median_ABV)) %>%  select(State, Median_ABV)
+#sorted_abv_state_median<-abv_state_median[order(-abv_state_median$Median_ABV),]
 sorted_abv_state_median$pgroup<-0
 # Plot bar chart of median ABVs.
 
