@@ -338,6 +338,7 @@ ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   ggtitle("Placeholder IBU boxplot")
 
 ```
+
 It's hard to see how the ABV are distributed; so looking at the boxplot, you can see that it's
 
 ## 7. Is there a relationship between ABV and IBU? 
