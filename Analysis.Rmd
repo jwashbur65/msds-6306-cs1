@@ -331,7 +331,7 @@ summary(merged_beers_clean$IBU)
 # Five-number summary can also be displayed in a boxplot.
 ggplot(merged_beers_clean, aes(x="", y=ABV)) +
   geom_boxplot() +
-  ggtitle("Placeholder ABU boxplot")
+  ggtitle("Placeholder ABV boxplot")
 ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   geom_boxplot() +
   ggtitle("Placeholder IBU boxplot")
