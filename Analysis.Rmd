@@ -258,7 +258,11 @@ theme(panel.grid.minor =   element_blank(),
 p1
 
 ```
+
+
 The output is a dataframe called abv_state_median that contains the median ABV value for each state.  The data is sorted and plotted using ggplot. 
+
+
 ```{r medians_abv_2}
 
 kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
@@ -303,7 +307,11 @@ p2
    
 
 ```
-The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot
+
+
+The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot  
+
+
 ``` {r medians_ibu_2}
 
 kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
