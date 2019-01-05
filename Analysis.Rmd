@@ -230,7 +230,11 @@ sorted_abv_state_median$pgroup<-0
 # Plot bar chart of median ABVs.
 
 #Output the Kable for the median ABV by State
-kable(abv_state_median, format="markdown", caption="Median ABV For Each State")
+kable(abv_state_median, 
+      caption="Median ABV For Each State",
+      col.names=c("State", "Median ABV"),
+      table.attr="style='width:30%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 maxrow<-nrow(sorted_abv_state_median)
 
@@ -277,7 +281,11 @@ sorted_ibu_state_median$pgroup<-0
 # Plot bar chart of median IBUs.
 
 #Output the Kable for the median IBU by State
-kable(ibu_state_median, format="markdown", caption="Median IBU For Each State")
+kable(ibu_state_median, 
+      caption="Median IBU For Each State",
+      col.names=c("State", "Median IBU"),
+      table.attr="style='width:30%;'") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 maxrow<-nrow(sorted_ibu_state_median)
 
@@ -364,6 +372,7 @@ merged_beers_clean %>%
   ggplot(aes(x="", y=ABV)) +
   geom_boxplot() +
   ggtitle("ABV Boxplot") +
+  theme_bw() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -374,6 +383,7 @@ merged_beers_clean %>%
   ggplot(aes(x="", y=IBU)) +
   geom_boxplot() +
   ggtitle("IBU Boxplot") +
+  theme_bw() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -397,6 +407,7 @@ abv_ibu_scatter <- merged_beers_clean %>%
   xlab("Alcohol By Volume (ABV)") +
   ylab("International Bitterness Units (IBU)") +
   ggtitle("Relationship Between Beer’s\nBitterness and Alcoholic Content") +
+  theme_bw() +
   theme(plot.title = element_text(hjust = 0.5),
        axis.ticks = element_blank()) +
 # Include linear regression with 95% pointwise confidence interval.
@@ -606,7 +617,7 @@ Ultimately, beers with low ABV and IBU may be nice for targeting a specific audi
 
 We have analyzed the highest and lowest ABV and IBU values for the states, as well as given ABV summary statistics in an earlier question. To narrow the choices further, we consider both the ABV and IBU summary statistics (namely the minimum, median, and maximum, plus an additional measure of center in the mean) for each of the states.
 
-```{r abv_summary_1, message=F}
+```{r abv_summary_1, fig.align="center"}
 
 # Subset to 6 candidates: CA, CO, IN, MA, MI, TX.
 merged_beers_candidates <- subset(merged_beers_clean, State %in% c("CA", "CO", "IN", "MA", "MI", "TX"))
@@ -657,7 +668,7 @@ Table: ABV Summary Statistics for Candidates
 
 As shown in the side-by-side boxplots, California, Colorado, Indiana, Michigan, and Texas have relatively similar ABV distributions, aside from some outliers in both directions. Compared to the national ABV averages, using both median and mean as measures of center, California, Colorado, Indiana, and Michigan produce slightly more alcoholic beers than average.
 
-```{r ibu_summary_1}
+```{r ibu_summary_1, fig.align="center"}
 
 # Boxplot for IBU distributions of canddiates.
 ibu_summary_box <- merged_beers_candidates %>%
@@ -724,10 +735,15 @@ Cheun Chugs & Cheers has several good choices in state for its new bar, The Meta
 * Indiana and Texas are good fallback options in the Midwest and South. 
 * Massachusetts is another option to extend the East Coast brand, offering a wide variety of notably less alcoholic and less bitter beers.
 
-Cities with the most breweries available in them, so they are recommended cities to open bar in state
-CA: San Diego (8)
-CO: Denver (8)
-IN: Indianapolis (4)
-MA: Boston (2)
-MI: Grand Rapids (3)
-TX: Austin (8)
+Within these states, certain well-populated cities are also home to multiple breweries that can serve the local college student and young professional crowd constituting The Meta Scientist's target demographic.
+
+State | City | Number of Breweries
+:-----|------|--------------------
+California | San Diego | 8
+Colorado | Denver | 8
+Indiana | Indianapolis | 4
+Massachusetts | Boston | 2
+Michigan | Grand Rapids | 3
+Texas | Austin | 8
+
+These are SMBrew Consulting's recommended states and cities for the location of Cheun Chugs and Cheers' new bar, The Meta Scientist.
