@@ -160,7 +160,7 @@ This table provides the exact numbers for all 51 states. The following details a
 * Each state has at least one brewery in the data set.
 * North Dakota, South Dakota, Washington DC, and Wyoming are tied for the least breweries, with one apiece.
 
-## 2. Merge beer data with breweries data. 
+## 2. Merge beer data with breweries data
 
 The breweries and beers in these data sets have a one-to-many relationship; each brewery can produce multiple beers, but each beer is only linked to a single brewery. Both data sets share brewery ID as a common variable, so it can be used to merge the breweries data set into the beers data set for further analysis.
 
@@ -188,7 +188,7 @@ kable(tail(merged_beers_clean, 6),
 
 The first and last six observations of the merged data frame are printed to show that the merge was successful. Note that because the brewery ID was used as the merging column, the new data frame is sorted in ascending order by that variable. Brewery_ID = 1 appears for the first six rows, while Brewery_ID = 558 appears in the final row of the last six, 558 being the number of breweries in the original Breweries.csv file. Furthermore, the row numbers for the last six observations indicate that all 2,410 craft beers from the original Beers.csv file made it into this merged data frame.
 
-## 3. Report number of NAs in each column.
+## 3. Report number of NAs in each column
 
 The above table of the last six observations displays "NA," or not available, for the International Bitterness Unit (IBU) variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
@@ -208,7 +208,7 @@ Any instances of NA are counted and reported in this table, which shows that the
 
 
 
-## 4. Compute median alcohol content and international bitterness unit for each state. 
+## 4. Compute median ABV and IBU and plot bar chart for each state
 
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
 ```{r medians_abv_1}
@@ -347,7 +347,7 @@ sorted_ibu_agg<-ibu.agg %>% arrange(desc(IBU))
 
 Colorado has the most alcoholic beer by ABV, with 0.128. Oregon has the most bitter beer by IBU, with a value of 138.
 
-## 6. Summary statistics.
+## 6. ABV summary statistics
 
 The summary statistics for the ABV value show the Min, Max, Median, Mean, 1st Quartile and 3rd Quartile.  
 
@@ -360,10 +360,10 @@ summary(merged_beers_clean$IBU)
 # Five-number summary can also be displayed in a boxplot.
 ggplot(merged_beers_clean, aes(x="", y=ABV)) +
   geom_boxplot() +
-  ggtitle("Placeholder ABV boxplot")
+  ggtitle("ABV boxplot")
 ggplot(merged_beers_clean, aes(x="", y=IBU)) +
   geom_boxplot() +
-  ggtitle("Placeholder IBU boxplot")
+  ggtitle("IBU boxplot")
 
 ```
 
