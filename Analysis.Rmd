@@ -206,8 +206,6 @@ kable(num_nas,
 
 Any instances of NA are counted and reported in this table, which shows that the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
 
-
-
 ## 4. Compute median ABV and IBU and plot bar chart for each state
 
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
@@ -292,7 +290,6 @@ p2
    
 
 ```
-
 
 The output is a new dataframe called ibu_state_median that contains the median IBU value for each state.  The data is sorted and plotted using ggplot  
 
