@@ -208,7 +208,7 @@ Any instances of NA are counted and reported in this table, which shows that the
 
 
 
-## 4. Compute median alcohol content and international bitterness unit for each state. 
+## 4. Compute median ABV and IBU and plot bar chart for each state. 
 
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State.   The NA values are ignored.    The same process is used to calculate the median IBU by state.
 ```{r medians_abv_1}
