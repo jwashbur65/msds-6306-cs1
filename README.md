@@ -19,13 +19,22 @@ CCAC prefers sourcing the majority of its food and liquor from partners in the s
 
 In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment’s working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC’s existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day.
 
-
-# Problem Statement
 To assist with its decision in choosing a state to host The Meta Scientist, CCAC has enlisted the aid of SMBrew Consulting (the authors of this document), a firm specializing in the hospitality industry. The client has provided us with two data sets:
 
 Breweries.csv: A table of 558 US breweries that have indicated interest in providing beer for The Meta Scientist.
 Beers.csv: A table of the 2,410 US craft beers those breweries make.
 Additionally, CCAC has outlined several questions of interest about the data in its initial consultation document. For ease of use to our client, those questions are explicitly numbered and answered below.
+
+# Problem Statement
+* Wants to open a new bar, The Meta Scientist, somewhere in the US
+* Received two files containing 558 breweries and 2,410 potential beers
+* Merged files together
+* Data contained missing values, which needed to be kept in mind for analysis
+  * Alcohol By Volume (ABV): 62 NAs
+  * International Bitterness Units (IBU): 1005 NAs
+  * Styles: 5 NAs
+* Excluding beers for which ABV/IBU was missing, we found a correlation between ABV/IBU because...
+
 
 # Conclusion
 In summary, the following statements apply for the original Breweries.csv and Beers.csv data sets:
