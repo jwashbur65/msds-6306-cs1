@@ -49,16 +49,16 @@ Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simpl
 
 CCAC prefers sourcing the majority of its food and liquor from partners in the same states as its bars to give guests a taste of local flavor and home state pride, a decision that continues to receive widespread acclaim from consumers. Surveys repeatedly cite the wide selection of different, high-quality local beers as the number one feature that keeps drawing regulars and newcomers alike through the doors. 
 
-In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment's working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC's existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day.
+In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment's working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC's existing clientele. CCAC plans to source from its partner distributor, CNW Brewery, which has an American portfolio currently spanning 2,410 beers from 558 breweries across 384 cities.
 
 ```{r logo2, out.width="150px", fig.align="center", echo=F}
 knitr::include_graphics("Images/SMBrew.png")
 ```
 
-To assist with its decision in choosing a state to host The Meta Scientist, CCAC has enlisted the aid of SMBrew Consulting (the authors of this document), a firm specializing in the hospitality industry. The client has provided us with two data sets:
+To assist with its decision in choosing a state to host The Meta Scientist, CCAC has enlisted the aid of SMBrew Consulting (the authors of this document), a firm specializing in the hospitality industry. The client has provided us with two data sets about the distributor:
 
-* Breweries.csv: A table of 558 US breweries that have indicated interest in providing beer for The Meta Scientist.
-* Beers.csv: A table of the 2,410 US craft beers those breweries make.
+* Breweries.csv: A table of CNW Brewery's 558 US breweries with their city and state locations.
+* Beers.csv: A table of the 2,410 US craft beers those breweries make, including details like alcohol content (as Alcohol By Volume, ABV), bitterness (in International Bitterness Units, IBU), and style.
 
 Additionally, CCAC has outlined several questions of interest about the data in its initial consultation document. For ease of use to our client, those questions are explicitly numbered and answered below.
 
@@ -198,7 +198,7 @@ The first and last six observations of the merged data frame are printed to show
 
 ## 3. Report number of NAs in each column.
 
-The above table of the last six observations displays "NA," or not available, for the International Bitterness Unit (IBU) variable, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
+The above table of the last six observations displays "NA," or not available, for IBU, indicating that those beers are missing IBU values. Knowing whether or not a variable is missing values is important because unless the NAs are explicitly ignored, some functions in R will return NA as an answer if NA occurs even once.
 
 ```{r num_nas}
 
@@ -212,7 +212,7 @@ kable(num_nas,
 
 ```
 
-Any instances of NA are counted and reported in this table, which shows that the Alcohol By Volume (ABV) and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
+Any instances of NA are counted and reported in this table, which shows that the ABV and IBU columns contain NAs, with 62 and 1,005, respectively. Additionally, 5 blanks in the Style column are also considered NAs. None of the other columns have missing values.
 
 ## 4. Compute median ABV and IBU and plot bar chart for each state.
 

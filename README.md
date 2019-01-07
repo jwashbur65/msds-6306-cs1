@@ -8,41 +8,28 @@ MSDS 6306 Case Study 1
 * Jeff Washburn
 
 # Introduction
-Cheun Chugs & Cheers (henceforth referred to by its ticker symbol CCAC, or simply “the client”) is an American hospitality company. Founded in 2008 in Reno, NV, by eponymous owner Jacquelyn Cheun, CCAC owns and operates a number of popular bars along the East Coast, including:
+Cheun Chugs & Cheers (CCAC) is an American hospitality company. Founded in 2008 in Reno, NV, by eponymous owner Jacquelyn Cheun, CCAC owns and operates several popular bars along the East Coast. The brand's main selling point is its wide selection of high-quality beers local to the states the establishments are present in.
 
-Reproducible Refreshment with OurStudio
-Statistics Never Lie
-Below the Tableau
-Spam and Eggs
-Munging by Moonlight
-CCAC prefers sourcing the majority of its food and liquor from partners in the same states as its bars to give guests a taste of local flavor and home state pride, a decision that continues to receive widespread acclaim from consumers. Surveys repeatedly cite the wide selection of different, high-quality local beers as the number one feature that keeps drawing regulars and newcomers alike through the doors.
+CCAC announced its intention to open a new US bar, The Meta Scientist, targeting the same college students and young professionals constituting the same millennial demographic as its current bars. CCAC plans to source from its partner distributor, CNW Brewery, which has a portfolio currently spanning 2,410 beers from 558 breweries across 384 cities.
 
-In December 2018, CCAC announced its interest in opening a new bar somewhere in the United States. The new establishment’s working name is The Meta Scientist. Its design concept is a casual hangout targeted at college students (of legal drinking age) and young professionals; the millennial generation, known for intentionally seeking novel experiences like new beers, constitutes a large segment of CCAC’s existing clientele. All current brewery partners, along with a number of new potential partners located across the country, submitted the names of beers they would be interested in providing on opening day.
+# Problem
+In keeping with its brand, CCAC wants The Meta Scientist to provide a diverse assortment of local, great-tasting beers. Therefore, the host state needs to have a wide selection of beers and styles with varying alcoholic content. To assist with this decision, CCAC has hired SMBrew Consulting to analyze CNW Brewery's brewery and beer holdings. The portfolio is held in two data sets:
 
-To assist with its decision in choosing a state to host The Meta Scientist, CCAC has enlisted the aid of SMBrew Consulting (the authors of this document), a firm specializing in the hospitality industry. The client has provided us with two data sets:
+* Breweries: A table of the 558 breweries and their city and state locations.
+* Beers: A table of the 2,410 US craft beers those breweries make, with details including alcohol content (as alcohol by volume, or ABV), bitterness (in International Bitterness Units, or IBU), and style.
 
-Breweries.csv: A table of 558 US breweries that have indicated interest in providing beer for The Meta Scientist.
-Beers.csv: A table of the 2,410 US craft beers those breweries make.
-Additionally, CCAC has outlined several questions of interest about the data in its initial consultation document. For ease of use to our client, those questions are explicitly numbered and answered below.
-
-# Problem Statement
-* Wants to open a new bar, The Meta Scientist, somewhere in the US
-* Received two files containing 558 breweries and 2,410 potential beers
-* Merged files together
-* Data contained missing values, which needed to be kept in mind for analysis
-  * Alcohol By Volume (ABV): 62 NAs
-  * International Bitterness Units (IBU): 1005 NAs
-  * Styles: 5 NAs
-* Excluding beers for which ABV/IBU was missing, we found a correlation between ABV/IBU because...
-
+CCAC outlined several questions of interest about the data. These are used as a starting point in our overall analysis toward choosing a state for The Meta Scientist.
 
 # Conclusion
-In summary, the following statements apply for the original Breweries.csv and Beers.csv data sets:
+After analyzing the data, SMBrew Consulting found the following details for the breweries and beers data sets:
 
-Some beers lack values for ABV, IBU, and/or Style.
-ABV and IBU have a moderate positive correlation. As one increases, the other also tends to increase.
-By state, ABV has a median range of [0.040, 0.0625]. IBU has a median range of [19, 61].
-The state with the highest ABV is Colorado. The highest IBU belongs to Oregon. The lowest of both comes from California.
+* Some beers have missing values for ABV, IBU, and/or Style. These are taken into account when studying correlation or aggregating data by state.
+* ABV and IBU have a moderate positive correlation. As one increases, the other also tends to increase.
+* By state, ABV has a median range of [0.040, 0625]. IBU has a median range of [19, 61].
+* The state with the highest ABV is Colorado, while the highest IBU belongs to Oregon. The lowest of both comes from California.
+* Colorado (47), California (39), and Michigan (32) are the states with the most breweries.
+
+Alongside answering the questions of interest, SMBrew Consulting drilled down further to figure out which states offered the most beers and styles. These were used in conjunction with ABV and IBU data to choose six candidates.
 
 # Recommendation
-Our recommendation is one of these states.  Download the source and knit to see our reasoning
+SMBrew Consulting recommends that Cheun Chugs & Cheers opens The Meta Scientist in one of the following states: California, Colorado, Indiana, Massachusetts, Michigan, or Texas. Colorado is notable for having the most breweries, beers, and styles, and the most alcoholic beer, while California comes second in breweries and beers and offers the least alcoholic and least bitter beers. Download and knit Analysis.Rmd for an in-depth explanation of the reasoning.
