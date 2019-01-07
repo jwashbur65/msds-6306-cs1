@@ -218,6 +218,10 @@ Any instances of NA are counted and reported in this table, which shows that the
 
 The median is calculated by using the aggregate function to apply the median command function to each of the ABV values listed by State. The NA values are ignored. The same process is used to calculate the median IBU by state.
 
+Kable is used to display the median data. 
+
+The dataframe of the median data is sorted and then split so that facets could be used in the ggplot for ease of viewing 
+
 ```{r medians_abv_1}
 
 # Calculate the median ABV values for each state, ignoring NAs.
@@ -239,6 +243,7 @@ kable(abv_state_median,
 
 maxrow<-nrow(sorted_abv_state_median)
 
+# Break up the data into facet screens for ease of viewing in ggplot
 for (row in 1:maxrow) { 
   if (row < 6)  sorted_abv_state_median[row, "pgroup"]<-1 
      else if (row < 11) sorted_abv_state_median[row, "pgroup"]<-2 
@@ -254,7 +259,6 @@ for (row in 1:maxrow) {
 
 abv_median_bars <- ggplot(sorted_abv_state_median, aes(x=State, y=Median_ABV, fill=Median_ABV)) + geom_bar(stat="identity") +
  facet_wrap(~ pgroup, scales="free" ) +
-#geom_text( aes( label = paste0( State ), y = sorted_abv_state_median$Median_ABV ), vjust = 1.4, size = 3, color = "white" ) +
 coord_flip() + ggtitle("ABV Median by State") + xlab("State") + ylab("ABV Median") +
 theme(panel.grid.minor = element_blank(),
       panel.grid.major = element_blank(), # element_line(colour = "white",size=0.75))
@@ -267,7 +271,9 @@ abv_median_bars
 
 ```
 
-The output is a dataframe called abv_state_median that contains the median ABV value for each state. The data is sorted and plotted using ggplot.
+The output is a dataframe called abv_state_median that contains the median ABV value for each state. The data is displayed in a Kable stated.   The data is sorted and plotted using ggplot with facets for ease of viewing.
+
+
 
 ```{r medians_ibu_1}
 
@@ -290,6 +296,7 @@ kable(ibu_state_median,
 
 maxrow<-nrow(sorted_ibu_state_median)
 
+#Using facets for ease of viewing in the ggplot. 
 for (row in 1:maxrow) { 
   if (row < 6)  sorted_ibu_state_median[row, "pgroup"]<-1 
      else if (row < 11) sorted_ibu_state_median[row, "pgroup"]<-2 
